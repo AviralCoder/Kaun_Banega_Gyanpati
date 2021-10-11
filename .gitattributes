@@ -1,1 +1,2 @@
 *.ts linguist-language=Java
+*.tsx linguist-language=Java
