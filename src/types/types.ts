@@ -13,3 +13,10 @@ export type Response = {
     response_code: number;
     results: Questions[];
 };
+
+// COLOR TYPES
+
+export type Colors = {
+    primary: string;
+    secondary: string;
+};

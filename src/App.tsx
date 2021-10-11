@@ -1,7 +1,13 @@
 import React from "react";
+import GlobalStyles from "./styles/global";
+import { colors } from "./lib/colors/colors";
 
 const App = (): JSX.Element => {
-    return <div className="App"></div>;
+    return (
+        <React.Fragment>
+            <GlobalStyles bgColor={colors.primary} />
+        </React.Fragment>
+    );
 };
 
 export default App;
