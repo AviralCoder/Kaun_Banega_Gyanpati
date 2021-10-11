@@ -20,3 +20,11 @@ export type Colors = {
     primary: string;
     secondary: string;
 };
+
+// PROPS
+
+/// QUESTION COMPONENT PROPS
+
+export type questionComponentProps = {
+    question: string;
+};
