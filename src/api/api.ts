@@ -16,7 +16,7 @@ export const fetchMediumQuestions = async (): Promise<Response> => {
 
 export const fetchDifficultQuestions = async (): Promise<Response> => {
     const endPoint: string =
-        "https://opentdb.com/api.php?amount=1&difficulty=difficult&type=multiple";
+        "https://opentdb.com/api.php?amount=1&difficuly=hard&type=multiple";
 
     return await (await fetch(endPoint)).json();
 };
