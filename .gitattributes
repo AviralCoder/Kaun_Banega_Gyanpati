@@ -1,2 +1,1 @@
-*.ts linguist-language=Java
-*.tsx linguist-language=Java
+*.html liguist-detectable=false
