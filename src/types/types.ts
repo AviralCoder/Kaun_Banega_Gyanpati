@@ -1,5 +1,7 @@
 // API RESPONSE TYPES
 
+import React from "react";
+
 export type Questions = {
     category: string;
     type: string;
@@ -31,4 +33,17 @@ export type questionComponentProps = {
 
 export type timerComponentProps = {
     time: number;
+};
+
+/// OPTION COMPONENT PROPS
+
+export type optionComponentProps = {
+    isCorrect: boolean;
+};
+
+/// LIFELINE COMPONENT PROPS
+
+export type lifelineComponentProps = {
+    children: React.ReactNode;
+    onClick: () => void;
 };
