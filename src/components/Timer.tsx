@@ -26,7 +26,7 @@ const GridCellCenter = styled.div`
     justify-content: center;
 `;
 
-const Timer = (props: timerComponentProps) => {
+const Timer = (props: timerComponentProps): JSX.Element => {
     return (
         <GridCellCenter>
             <div>
