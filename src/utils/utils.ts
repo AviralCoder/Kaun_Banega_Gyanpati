@@ -1,3 +1,7 @@
-const randomNumber = (min: number, max: number) => {};
+const randomNumber = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+const convertEncodingToText = (text: string) => {};
 
 export { randomNumber };

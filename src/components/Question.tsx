@@ -22,8 +22,9 @@ const Question = (props: questionComponentProps): JSX.Element => {
     const editedText: string = props.question.replaceAll("&quot;", '"');
     const editedText2: string = editedText.replaceAll("&rsquo;", "'");
     const editedText3: string = editedText2.replaceAll("&#039;", "'");
+    const editedText4: string = editedText3.replaceAll("&eacute;", "é");
 
-    const finalText = editedText3;
+    const finalText = editedText4;
 
     return (
         <section className="question">

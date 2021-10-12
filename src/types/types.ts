@@ -6,7 +6,7 @@ export type Questions = {
     difficulty: string;
     question: string;
     correct_answer: string;
-    ncorrect_answers: string[];
+    incorrect_answers: string[];
 };
 
 export type Response = {
@@ -20,8 +20,6 @@ export type Colors = {
     primary: string;
     secondary: string;
 };
-
-// PROPS
 
 /// QUESTION COMPONENT PROPS
 
