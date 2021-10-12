@@ -14,6 +14,14 @@ import {
 import { OptionGrid } from "./layout/OptionGrid";
 import Button from "./components/Button";
 import { randomNumber } from "./utils/utils";
+import Lifeline from "./components/Lifeline";
+import GoogleIcon from "./images/google.png";
+import styled from "styled-components";
+
+const GoogleIconImg = styled.img`
+    fill: ${colors.secondary};
+    width: 100px;
+`;
 
 const App = (): JSX.Element => {
     const [question, setQuestion] = useState<string>("");
@@ -47,6 +55,11 @@ const App = (): JSX.Element => {
 
     useEffect(() => {
         fetchQuestion();
+
+        window.addEventListener("focusout", () => {});
+
+        window.focus();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -80,7 +93,19 @@ const App = (): JSX.Element => {
                                 </Button>
                             </OptionGrid>
                         </section>
-                        <Question question="Which name in India means Idle?" />
+
+                        <section>
+                            <Lifeline
+                                onClick={() => {
+                                    console.log("google life line taken");
+                                }}
+                            >
+                                <GoogleIconImg
+                                    src={GoogleIcon}
+                                    alt="Google Icon"
+                                />
+                            </Lifeline>
+                        </section>
                     </Layout>
                 </Route>
 
