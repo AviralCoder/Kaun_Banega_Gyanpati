@@ -19,10 +19,16 @@ const QuestionText = styled.p`
 `;
 
 const Question = (props: questionComponentProps): JSX.Element => {
+    const editedText: string = props.question.replaceAll("&quot;", '"');
+    const editedText2: string = editedText.replaceAll("&rsquo;", "'");
+    const editedText3: string = editedText2.replaceAll("&#039;", "'");
+
+    const finalText = editedText3;
+
     return (
         <section className="question">
             <QuestionDiv>
-                <QuestionText>{props.question}</QuestionText>
+                <QuestionText>{finalText}</QuestionText>
             </QuestionDiv>
         </section>
     );
