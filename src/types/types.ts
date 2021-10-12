@@ -28,3 +28,9 @@ export type Colors = {
 export type questionComponentProps = {
     question: string;
 };
+
+/// TIMER COMPONENT PROPS
+
+export type timerComponentProps = {
+    time: number;
+};
