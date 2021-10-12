@@ -11,24 +11,35 @@ import {
     fetchEasyQuestions,
     fetchMediumQuestions,
 } from "./api/api";
+import { OptionGrid } from "./layout/OptionGrid";
+import Button from "./components/Button";
+import { randomNumber } from "./utils/utils";
 
 const App = (): JSX.Element => {
     const [question, setQuestion] = useState<string>("");
     const [difficultyLevel, setDifficultyLevel] = useState<string>("easy");
+    const [correctAnswer, setCorrectAnswer] = useState<string>("");
+    const [wrongAnswers, setWrongAnswers] = useState<string[]>([]);
 
     const fetchQuestion = async () => {
         if (difficultyLevel === "easy") {
             const res = await fetchEasyQuestions();
 
             setQuestion(res.results[0].question);
+            setCorrectAnswer(res.results[0].correct_answer);
+            setWrongAnswers(res.results[0].incorrect_answers);
         } else if (difficultyLevel === "medum") {
             const res = await fetchMediumQuestions();
 
             setQuestion(res.results[0].question);
+            setCorrectAnswer(res.results[0].correct_answer);
+            setWrongAnswers(res.results[0].incorrect_answers);
         } else if (difficultyLevel === "hard") {
             const res = await fetchDifficultQuestions();
 
             setQuestion(res.results[0].question);
+            setCorrectAnswer(res.results[0].correct_answer);
+            setWrongAnswers(res.results[0].incorrect_answers);
         } else {
             throw new Error("No difficulty passed!");
         }
@@ -48,7 +59,27 @@ const App = (): JSX.Element => {
                     <Layout>
                         <Timer time={20} />
                         <Question question="Which name in India means Idle?" />
-                        <Question question={question} />
+
+                        <section>
+                            <Question question={question} />
+                            <OptionGrid>
+                                <Button style={{ margin: "20px 20px" }}>
+                                    {correctAnswer}
+                                </Button>
+
+                                <Button style={{ margin: "20px 20px" }}>
+                                    {wrongAnswers[0]}
+                                </Button>
+
+                                <Button style={{ margin: "20px 20px" }}>
+                                    {wrongAnswers[1]}
+                                </Button>
+
+                                <Button style={{ margin: "20px 20px" }}>
+                                    {wrongAnswers[2]}
+                                </Button>
+                            </OptionGrid>
+                        </section>
                         <Question question="Which name in India means Idle?" />
                     </Layout>
                 </Route>
