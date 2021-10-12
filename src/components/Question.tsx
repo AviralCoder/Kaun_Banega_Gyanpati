@@ -15,6 +15,7 @@ const QuestionDiv = styled.div`
 const QuestionText = styled.p`
     color: white;
     font-size: 1.1rem;
+    user-select: none;
     text-align: center;
 `;
 

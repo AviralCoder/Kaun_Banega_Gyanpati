@@ -47,3 +47,16 @@ export type lifelineComponentProps = {
     children: React.ReactNode;
     onClick: () => void;
 };
+
+/// FLEXBOX COMPONENT PROPS
+
+export type flexboxComponentProps = {
+    children: React.ReactNode;
+};
+
+/// TOOLTIP COMPONENT PROPS
+
+export type tooltipComponentProps = {
+    children: React.ReactNode;
+    text: string;
+};

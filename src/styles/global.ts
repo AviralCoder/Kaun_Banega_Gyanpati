@@ -1,11 +1,11 @@
 import { createGlobalStyle } from "styled-components";
+import { colors } from "../lib/colors/colors";
 
 type globalStylePropsTypes = {
     bgColor: string;
 };
 
 export default createGlobalStyle<globalStylePropsTypes>`
-   @import url('');
    *{
        margin: 0;
        padding: 0;
@@ -16,5 +16,17 @@ export default createGlobalStyle<globalStylePropsTypes>`
    body{
        background-color: ${(props) => props.bgColor};
    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: ${colors.primary}; 
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: ${colors.secondary}; 
+    }
 
 `;

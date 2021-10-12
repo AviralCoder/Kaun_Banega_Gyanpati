@@ -17,10 +17,22 @@ import { randomNumber } from "./utils/utils";
 import Lifeline from "./components/Lifeline";
 import GoogleIcon from "./images/google.png";
 import styled from "styled-components";
+import Flexbox from "./layout/Flexbox";
+import FlipIcon from "./images/flip.jpg";
+import Tooltip from "./components/Tooltip";
 
 const GoogleIconImg = styled.img`
-    fill: ${colors.secondary};
     width: 100px;
+`;
+
+const FlipIconImg = styled.img`
+    width: 100px;
+`;
+
+const LifelinesHeader = styled.h1`
+    text-align: center;
+    font-size: 2rem;
+    color: #fff;
 `;
 
 const App = (): JSX.Element => {
@@ -95,16 +107,39 @@ const App = (): JSX.Element => {
                         </section>
 
                         <section>
-                            <Lifeline
-                                onClick={() => {
-                                    console.log("google life line taken");
-                                }}
-                            >
-                                <GoogleIconImg
-                                    src={GoogleIcon}
-                                    alt="Google Icon"
-                                />
-                            </Lifeline>
+                            <LifelinesHeader>Lifelines</LifelinesHeader>
+
+                            <Flexbox>
+                                <Tooltip text="15s to search Google!">
+                                    <Lifeline
+                                        onClick={() => {
+                                            console.log(
+                                                "google life line taken"
+                                            );
+                                        }}
+                                    >
+                                        <GoogleIconImg
+                                            src={GoogleIcon}
+                                            alt="Google Icon"
+                                        />
+                                    </Lifeline>
+                                </Tooltip>
+
+                                <Tooltip text="Flip the question!">
+                                    <Lifeline
+                                        onClick={() => {
+                                            console.log(
+                                                "google life line taken"
+                                            );
+                                        }}
+                                    >
+                                        <FlipIconImg
+                                            src={FlipIcon}
+                                            alt="Flip Icon"
+                                        />
+                                    </Lifeline>
+                                </Tooltip>
+                            </Flexbox>
                         </section>
                     </Layout>
                 </Route>
