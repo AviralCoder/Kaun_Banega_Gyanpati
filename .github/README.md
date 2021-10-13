@@ -21,6 +21,7 @@ class Kaun_Banega_Gyanpati
 
     checkAnswer = () => {
         if (this.answerChosen === "correct") {
+            incraseGyan();
             return true;
         } else {
             return false;
