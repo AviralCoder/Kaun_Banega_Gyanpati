@@ -74,3 +74,10 @@ export type menuComponentProps = {
     logo: string;
     onClick: () => void;
 };
+
+/// KNOWLEDGE SCORE CONTEXT PROPS
+
+export type knowledgeScoreContextProps = {
+    value: number;
+    children: React.ReactNode;
+};
