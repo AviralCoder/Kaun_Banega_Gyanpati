@@ -23,6 +23,7 @@ import Tooltip from "./components/Tooltip";
 import KnowledgeScore from "./components/KnowledgeScore";
 import Menu from "./components/Menu";
 import MenuIcon from "./images/menu.jpg";
+import Settings from "./pages/Settings";
 
 const GoogleIconImg = styled.img`
     width: 100px;
@@ -152,6 +153,10 @@ const App = (): JSX.Element => {
                             </Flexbox>
                         </section>
                     </Layout>
+                </Route>
+
+                <Route path="/settings">
+                    <Settings />
                 </Route>
 
                 <Route path="*">
