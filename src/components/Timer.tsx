@@ -1,6 +1,10 @@
+// uncomment all
+
+// import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+// import { SetHasLostContext } from "../App";
 import { colors } from "../lib/colors/colors";
-import { timerComponentProps } from "../types/types";
+// import { timerComponentProps } from "../types/types";
 
 const TimerText = styled.p`
     color: #fff;
@@ -28,12 +32,28 @@ const GridCellCenter = styled.div`
     justify-content: center;
 `;
 
-const Timer = (props: timerComponentProps): JSX.Element => {
+const Timer = (props: any): JSX.Element => {
+    // const [timerValue, setTimerValue] = useState(60);
+    // const setHasLost = useContext(SetHasLostContext);
+
+    // useEffect(() => {
+    //     // const interval = setInterval(() => {
+    //     //     if (timerValue === 0) {
+    //     //         alert("lost!");
+    //     //         clearInterval(interval);
+    //     //         setHasLost(true);
+    //     //     } else setTimerValue((timer) => timer - 1);
+    //     // }, 1000);
+    //     // return () => clearInterval(interval);
+    // });
+
     return (
         <GridCellCenter>
             <div>
                 <Circle>
-                    <TimerText>{props.time}</TimerText>
+                    <TimerText>
+                        60 {/* REPLACE THIS WITH TIMER VALUE*/}
+                    </TimerText>
                 </Circle>
             </div>
         </GridCellCenter>

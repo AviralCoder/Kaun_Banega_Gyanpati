@@ -4,7 +4,7 @@ import { menuComponentProps } from "../types/types";
 
 const OuterDiv = styled.div`
     background-color: ${colors.secondary};
-    position: absolute;
+    position: fixed;
     top: 20px;
     width: 80px;
     height: 80px;

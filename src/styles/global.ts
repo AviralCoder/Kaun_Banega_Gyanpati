@@ -15,6 +15,7 @@ export default createGlobalStyle<globalStylePropsTypes>`
    }
    body{
        background-color: ${(props) => props.bgColor};
+       overflow-x: hidden;
    }
 
     ::-webkit-scrollbar {

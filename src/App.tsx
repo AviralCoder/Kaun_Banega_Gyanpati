@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import GlobalStyles from "./styles/global";
 import { colors } from "./lib/colors/colors";
 import Question from "./components/Question";
@@ -6,11 +6,7 @@ import { Layout } from "./layout/layout";
 import Timer from "./components/Timer";
 import { Switch, Route, useHistory } from "react-router-dom";
 import Four from "./pages/404";
-import {
-    fetchDifficultQuestions,
-    fetchEasyQuestions,
-    fetchMediumQuestions,
-} from "./api/api";
+
 import { OptionGrid } from "./layout/OptionGrid";
 import Button from "./components/Button";
 import Lifeline from "./components/Lifeline";
@@ -23,6 +19,12 @@ import KnowledgeScore from "./components/KnowledgeScore";
 import Menu from "./components/Menu";
 import MenuIcon from "./images/menu.jpg";
 import Settings from "./pages/Settings";
+import Alert from "./components/Alert";
+import Instructions from "./components/Instructions";
+
+const SetHasLostContext = createContext<
+    React.Dispatch<React.SetStateAction<boolean>>
+>(() => {});
 
 const GoogleIconImg = styled.img`
     width: 100px;
@@ -38,146 +40,133 @@ const LifelinesHeader = styled.h1`
     color: #fff;
 `;
 
+interface AlertProperties {
+    visible: boolean;
+}
+
 const App = (): JSX.Element => {
-    const [question, setQuestion] = useState<string>("");
-    const [difficultyLevel] = useState<string>("easy");
-    const [correctAnswer, setCorrectAnswer] = useState<string>("");
-    const [wrongAnswers, setWrongAnswers] = useState<string[]>([]);
-    const [timer, setTimer] = useState(60);
+    const [hasLost, setHasLost] = useState<boolean>(false);
+    const [alertProperties, setAlertProperties] = useState<AlertProperties>({
+        visible: true,
+    });
 
     const history = useHistory();
 
-    const fetchQuestion = async () => {
-        if (difficultyLevel === "easy") {
-            const res = await fetchEasyQuestions();
-
-            setQuestion(res.results[0].question);
-            setCorrectAnswer(res.results[0].correct_answer);
-            setWrongAnswers(res.results[0].incorrect_answers);
-        } else if (difficultyLevel === "medum") {
-            const res = await fetchMediumQuestions();
-
-            setQuestion(res.results[0].question);
-            setCorrectAnswer(res.results[0].correct_answer);
-            setWrongAnswers(res.results[0].incorrect_answers);
-        } else if (difficultyLevel === "hard") {
-            const res = await fetchDifficultQuestions();
-
-            setQuestion(res.results[0].question);
-            setCorrectAnswer(res.results[0].correct_answer);
-            setWrongAnswers(res.results[0].incorrect_answers);
-        } else {
-            throw new Error("No difficulty passed!");
-        }
-    };
-
-    const startTimer = () => {
-        setInterval(() => {
-            setTimer((timer) => timer - 1);
-        }, 1000);
-    };
-
-    // pls uncomment this
-    // const resetTimer = () => {
-    //     setTimer(60);
-    // };
+    useEffect(() => {
+        console.log(hasLost);
+    }, [hasLost]);
 
     useEffect(() => {
-        fetchQuestion();
-
         window.addEventListener("focusout", () => {});
 
         window.focus();
 
-        startTimer();
+        return () => window.removeEventListener("focusout", () => {});
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <React.Fragment>
-            <GlobalStyles bgColor={colors.primary} />
+            <SetHasLostContext.Provider value={setHasLost}>
+                <GlobalStyles bgColor={colors.primary} />
 
-            <Switch>
-                <Route path="/" exact>
-                    <Menu
-                        logo={MenuIcon}
-                        onClick={() => history.push("/settings")}
-                    />
+                <Switch>
+                    <Route path="/" exact>
+                        <Menu
+                            logo={MenuIcon}
+                            onClick={() => history.push("/settings")}
+                        />
 
-                    <Layout>
-                        <Timer time={timer} />
-                        <KnowledgeScore score={40} />
+                        {alertProperties.visible ? (
+                            <Alert
+                                heading="Welcome!"
+                                body={() => <Instructions />}
+                                buttonText="OK."
+                                onButtonClick={() => {
+                                    setAlertProperties({
+                                        ...alertProperties,
+                                        visible: false,
+                                    });
+                                }}
+                            />
+                        ) : null}
 
-                        <section>
-                            <Question question={question} />
-                            <OptionGrid>
-                                <Button style={{ margin: "20px 20px" }}>
-                                    {correctAnswer}
-                                </Button>
+                        <Layout>
+                            <Timer />
+                            <KnowledgeScore score={40} />
 
-                                <Button style={{ margin: "20px 20px" }}>
-                                    {wrongAnswers[0]}
-                                </Button>
+                            <section>
+                                <Question question="Which of these coding languages are statically typed?" />
+                                <OptionGrid>
+                                    <Button style={{ margin: "20px 20px" }}>
+                                        Python
+                                    </Button>
 
-                                <Button style={{ margin: "20px 20px" }}>
-                                    {wrongAnswers[1]}
-                                </Button>
+                                    <Button style={{ margin: "20px 20px" }}>
+                                        JavaScript
+                                    </Button>
 
-                                <Button style={{ margin: "20px 20px" }}>
-                                    {wrongAnswers[2]}
-                                </Button>
-                            </OptionGrid>
-                        </section>
+                                    <Button style={{ margin: "20px 20px" }}>
+                                        TypeScript
+                                    </Button>
 
-                        <section>
-                            <LifelinesHeader>Lifelines</LifelinesHeader>
+                                    <Button style={{ margin: "20px 20px" }}>
+                                        Lua
+                                    </Button>
+                                </OptionGrid>
+                            </section>
 
-                            <Flexbox>
-                                <Tooltip text="15s to search Google!">
-                                    <Lifeline
-                                        onClick={() => {
-                                            console.log(
-                                                "google life line taken"
-                                            );
-                                        }}
-                                    >
-                                        <GoogleIconImg
-                                            src={GoogleIcon}
-                                            alt="Google Icon"
-                                        />
-                                    </Lifeline>
-                                </Tooltip>
+                            <section>
+                                <LifelinesHeader>Lifelines</LifelinesHeader>
 
-                                <Tooltip text="Flip the question!">
-                                    <Lifeline
-                                        onClick={() => {
-                                            console.log(
-                                                "google life line taken"
-                                            );
-                                        }}
-                                    >
-                                        <FlipIconImg
-                                            src={FlipIcon}
-                                            alt="Flip Icon"
-                                        />
-                                    </Lifeline>
-                                </Tooltip>
-                            </Flexbox>
-                        </section>
-                    </Layout>
-                </Route>
+                                <Flexbox>
+                                    <Tooltip text="15s to search Google!">
+                                        <Lifeline
+                                            onClick={() => {
+                                                console.log(
+                                                    "google life line taken"
+                                                );
+                                            }}
+                                        >
+                                            <GoogleIconImg
+                                                src={GoogleIcon}
+                                                alt="Google Icon"
+                                            />
+                                        </Lifeline>
+                                    </Tooltip>
 
-                <Route path="/settings">
-                    <Settings />
-                </Route>
+                                    <Tooltip text="Flip the question!">
+                                        <Lifeline
+                                            onClick={() => {
+                                                console.log(
+                                                    "google life line taken"
+                                                );
+                                            }}
+                                        >
+                                            <FlipIconImg
+                                                src={FlipIcon}
+                                                alt="Flip Icon"
+                                            />
+                                        </Lifeline>
+                                    </Tooltip>
+                                </Flexbox>
+                            </section>
+                        </Layout>
+                    </Route>
 
-                <Route path="*">
-                    <Four />
-                </Route>
-            </Switch>
+                    <Route path="/settings">
+                        <Settings />
+                    </Route>
+
+                    <Route path="*">
+                        <Four />
+                    </Route>
+                </Switch>
+            </SetHasLostContext.Provider>
         </React.Fragment>
     );
 };
 
 export default App;
+export { SetHasLostContext };
