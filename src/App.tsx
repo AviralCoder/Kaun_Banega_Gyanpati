@@ -22,6 +22,8 @@ import Settings from "./pages/Settings";
 import Alert from "./components/Alert";
 import Instructions from "./components/Instructions";
 
+const KBC_Intro = require("./audio/kbc sounds.mp3");
+
 const SetHasLostContext = createContext<
     React.Dispatch<React.SetStateAction<boolean>>
 >(() => {});
