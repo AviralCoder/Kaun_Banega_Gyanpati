@@ -29,7 +29,7 @@ const TooltipContainer = styled.div`
     }
 `;
 
-const Tooltip = ({ children, text }: tooltipComponentProps) => {
+const Tooltip = ({ children, text }: tooltipComponentProps): JSX.Element => {
     const [show, setShow] = React.useState(false);
 
     return (

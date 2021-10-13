@@ -20,7 +20,7 @@ const OuterDiv = styled.div`
     }
 `;
 
-const Menu = (props: menuComponentProps) => {
+const Menu = (props: menuComponentProps): JSX.Element => {
     return (
         <OuterDiv onClick={props.onClick}>
             <img src={props.logo} alt="Menu logo" width={40} />

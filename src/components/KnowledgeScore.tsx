@@ -26,7 +26,7 @@ const Score = styled.h1`
     text-align: center;
 `;
 
-const KnowledgeScore = (props: knowledgeScoreComponentProps) => {
+const KnowledgeScore = (props: knowledgeScoreComponentProps): JSX.Element => {
     return (
         <React.Fragment>
             <KnowledgeScoreDiv>
