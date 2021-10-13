@@ -60,3 +60,17 @@ export type tooltipComponentProps = {
     children: React.ReactNode;
     text: string;
 };
+
+/// KNOWLEDGE SCORE COMPONENT PROPS
+
+export type knowledgeScoreComponentProps = {
+    children?: React.ReactNode;
+    score: number;
+};
+
+/// MENY COMPONENT PROPS
+
+export type menuComponentProps = {
+    logo: string;
+    onClick: () => void;
+};

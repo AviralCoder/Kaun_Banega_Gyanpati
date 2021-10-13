@@ -4,7 +4,7 @@ import { colors } from "./lib/colors/colors";
 import Question from "./components/Question";
 import { Layout } from "./layout/layout";
 import Timer from "./components/Timer";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import Four from "./pages/404";
 import {
     fetchDifficultQuestions,
@@ -20,6 +20,9 @@ import styled from "styled-components";
 import Flexbox from "./layout/Flexbox";
 import FlipIcon from "./images/flip.jpg";
 import Tooltip from "./components/Tooltip";
+import KnowledgeScore from "./components/KnowledgeScore";
+import Menu from "./components/Menu";
+import MenuIcon from "./images/menu.jpg";
 
 const GoogleIconImg = styled.img`
     width: 100px;
@@ -40,6 +43,8 @@ const App = (): JSX.Element => {
     const [difficultyLevel, setDifficultyLevel] = useState<string>("easy");
     const [correctAnswer, setCorrectAnswer] = useState<string>("");
     const [wrongAnswers, setWrongAnswers] = useState<string[]>([]);
+
+    const history = useHistory();
 
     const fetchQuestion = async () => {
         if (difficultyLevel === "easy") {
@@ -81,9 +86,14 @@ const App = (): JSX.Element => {
 
             <Switch>
                 <Route path="/" exact>
+                    <Menu
+                        logo={MenuIcon}
+                        onClick={() => history.push("/settings")}
+                    />
+
                     <Layout>
                         <Timer time={20} />
-                        <Question question="Which name in India means Idle?" />
+                        <KnowledgeScore score={40} />
 
                         <section>
                             <Question question={question} />
