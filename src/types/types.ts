@@ -1,6 +1,6 @@
 // API RESPONSE TYPES
 
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 export type Questions = {
     category: string;
@@ -79,5 +79,12 @@ export type menuComponentProps = {
 
 export type knowledgeScoreContextProps = {
     value: number;
+    children: React.ReactNode;
+};
+
+/// SET TIMER CONTEXT PROPS
+
+export type setTimerContextProps = {
+    value: Dispatch<SetStateAction<number>>;
     children: React.ReactNode;
 };

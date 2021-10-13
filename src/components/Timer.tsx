@@ -5,6 +5,8 @@ import { timerComponentProps } from "../types/types";
 const TimerText = styled.p`
     color: #fff;
     font-size: 6rem;
+    font-family: sans-serif;
+    font-weight: 300;
 `;
 
 const Circle = styled.div`

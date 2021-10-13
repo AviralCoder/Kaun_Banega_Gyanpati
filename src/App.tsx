@@ -13,7 +13,6 @@ import {
 } from "./api/api";
 import { OptionGrid } from "./layout/OptionGrid";
 import Button from "./components/Button";
-import { randomNumber } from "./utils/utils";
 import Lifeline from "./components/Lifeline";
 import GoogleIcon from "./images/google.png";
 import styled from "styled-components";
@@ -41,9 +40,10 @@ const LifelinesHeader = styled.h1`
 
 const App = (): JSX.Element => {
     const [question, setQuestion] = useState<string>("");
-    const [difficultyLevel, setDifficultyLevel] = useState<string>("easy");
+    const [difficultyLevel] = useState<string>("easy");
     const [correctAnswer, setCorrectAnswer] = useState<string>("");
     const [wrongAnswers, setWrongAnswers] = useState<string[]>([]);
+    const [timer, setTimer] = useState(60);
 
     const history = useHistory();
 
@@ -71,12 +71,25 @@ const App = (): JSX.Element => {
         }
     };
 
+    const startTimer = () => {
+        setInterval(() => {
+            setTimer((timer) => timer - 1);
+        }, 1000);
+    };
+
+    // pls uncomment this
+    // const resetTimer = () => {
+    //     setTimer(60);
+    // };
+
     useEffect(() => {
         fetchQuestion();
 
         window.addEventListener("focusout", () => {});
 
         window.focus();
+
+        startTimer();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -93,7 +106,7 @@ const App = (): JSX.Element => {
                     />
 
                     <Layout>
-                        <Timer time={20} />
+                        <Timer time={timer} />
                         <KnowledgeScore score={40} />
 
                         <section>
