@@ -23,8 +23,6 @@ import Alert from "./components/Alert";
 import Instructions from "./components/Instructions";
 import { Howl, Howler } from "howler";
 
-const KBC_Intro = require("./audio/kbc sounds.mp3");
-
 const SetHasLostContext = createContext<
     React.Dispatch<React.SetStateAction<boolean>>
 >(() => {});
@@ -64,7 +62,7 @@ const App = (): JSX.Element => {
 
     const AUDIOS = {
         intro: new Howl({
-            src: [KBC_Intro],
+            src: ["/kbc_sounds.mp3"],
         }),
     };
 
