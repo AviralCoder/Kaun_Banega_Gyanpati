@@ -2,7 +2,7 @@
 
 **PROJECT IN DEVELOPMENT**
 
-My first typescript and styled component project 😄
+My first typescript and styled component project 😄. All source code written in typescript, including styles. 
 
 ---
 
