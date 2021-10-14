@@ -21,6 +21,17 @@ const AlertInnerModalDiv = styled.div`
     transform: translateX(-50%) translateY(-50%);
     background: ${colors.primary};
     overflow: scroll;
+    animation-name: opacityChange;
+    animation-duration: 2s;
+
+    @keyframes opacityChange {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
 `;
 
 const AlertTitle = styled.h1`

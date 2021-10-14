@@ -10,5 +10,10 @@ the question and Flip The Question lifeline which
 lets you change the question. Remember this, you got 
 only one chance to click the questions, if you click any 
 option then we will take it to be chosen by you so don't
-misclick! 
+misclick! You have got 60 seconds to answer each question.
+And yes, if you change tabs, then we will consider it as
+cheating and we will reset your points back to 0. When you take
+the Google lifeline, then you are allowed to change tabs. Since
+this app is just a web app, we recommend someone to monitor how
+you play.
 `;

@@ -21,6 +21,7 @@ import MenuIcon from "./images/menu.jpg";
 import Settings from "./pages/Settings";
 import Alert from "./components/Alert";
 import Instructions from "./components/Instructions";
+import { Howl, Howler } from "howler";
 
 const KBC_Intro = require("./audio/kbc sounds.mp3");
 
@@ -46,21 +47,29 @@ interface AlertProperties {
     visible: boolean;
 }
 
+interface GameProperties {
+    knowledgePoints: number;
+}
+
 const App = (): JSX.Element => {
     const [hasLost, setHasLost] = useState<boolean>(false);
     const [alertProperties, setAlertProperties] = useState<AlertProperties>({
         visible: true,
     });
+    const [gameProperties, setGameProperties] = useState<GameProperties>({
+        knowledgePoints: 0,
+    });
 
     const history = useHistory();
 
-    useEffect(() => {
-        console.log(hasLost);
-    }, [hasLost]);
+    const AUDIOS = {
+        intro: new Howl({
+            src: [KBC_Intro],
+        }),
+    };
 
     useEffect(() => {
         window.addEventListener("focusout", () => {});
-
         window.focus();
 
         return () => window.removeEventListener("focusout", () => {});
@@ -90,6 +99,7 @@ const App = (): JSX.Element => {
                                         ...alertProperties,
                                         visible: false,
                                     });
+                                    AUDIOS.intro.play();
                                 }}
                             />
                         ) : null}
