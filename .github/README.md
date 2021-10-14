@@ -2,6 +2,8 @@
 
 **PROJECT IN DEVELOPMENT**
 
+My first typescript and styled component project 😄
+
 ---
 
 ```ts
