@@ -1,10 +1,13 @@
-// uncomment all
-
-// import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-// import { SetHasLostContext } from "../App";
+import {
+    SetHasLostContext,
+    GamePropertiesContext,
+    SetGamePropertiesContext,
+    SetAlertPropetiesContext,
+} from "../App";
 import { colors } from "../lib/colors/colors";
-// import { timerComponentProps } from "../types/types";
+import { timerComponentProps } from "../types/types";
 
 const TimerText = styled.p`
     color: #fff;
@@ -33,27 +36,49 @@ const GridCellCenter = styled.div`
 `;
 
 const Timer = (props: any): JSX.Element => {
-    // const [timerValue, setTimerValue] = useState(60);
-    // const setHasLost = useContext(SetHasLostContext);
+    const [timerValue, setTimerValue] = useState(60);
+    const setHasLost = useContext(SetHasLostContext);
+    const gameProperties = useContext(GamePropertiesContext);
+    const setGameProperties = useContext(SetGamePropertiesContext);
+    const setAlertPropertes = useContext(SetAlertPropetiesContext);
 
-    // useEffect(() => {
-    //     // const interval = setInterval(() => {
-    //     //     if (timerValue === 0) {
-    //     //         alert("lost!");
-    //     //         clearInterval(interval);
-    //     //         setHasLost(true);
-    //     //     } else setTimerValue((timer) => timer - 1);
-    //     // }, 1000);
-    //     // return () => clearInterval(interval);
-    // });
+    useEffect(() => {
+        let interval: any;
+
+        if (gameProperties.gameStarted === true) {
+            interval = setInterval(() => {
+                if (timerValue <= 0) {
+                    clearInterval(interval);
+                    setHasLost(true);
+                    setGameProperties({
+                        ...gameProperties,
+                        gameStarted: false,
+                    });
+                    setAlertPropertes({
+                        heading: "You lost! 😓",
+                        visible: true,
+                        body: () => (
+                            <p>
+                                You lost because you crossed 60s to answer this
+                                question!
+                            </p>
+                        ),
+                        buttonText: "Retry :(",
+                        onButtonClick: () => {
+                            window.location.reload();
+                        },
+                    });
+                } else setTimerValue((timer) => timer - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    });
 
     return (
         <GridCellCenter>
             <div>
                 <Circle>
-                    <TimerText>
-                        60 {/* REPLACE THIS WITH TIMER VALUE*/}
-                    </TimerText>
+                    <TimerText>{timerValue}</TimerText>
                 </Circle>
             </div>
         </GridCellCenter>

@@ -21,10 +21,26 @@ import MenuIcon from "./images/menu.jpg";
 import Settings from "./pages/Settings";
 import Alert from "./components/Alert";
 import Instructions from "./components/Instructions";
-import { Howl, Howler } from "howler";
+import { Howl } from "howler";
+import {
+    fetchDifficultQuestions,
+    fetchEasyQuestions,
+    fetchMediumQuestions,
+} from "./api/api";
 
+const GamePropertiesContext = createContext<GameProperties>({
+    knowledgePoints: 0,
+    gameStarted: false,
+    diffcultyLevel: "easy",
+});
 const SetHasLostContext = createContext<
     React.Dispatch<React.SetStateAction<boolean>>
+>(() => {});
+const SetGamePropertiesContext = createContext<
+    React.Dispatch<React.SetStateAction<GameProperties>>
+>(() => {});
+const SetAlertPropetiesContext = createContext<
+    React.Dispatch<React.SetStateAction<AlertProperties>>
 >(() => {});
 
 const GoogleIconImg = styled.img`
@@ -43,140 +59,241 @@ const LifelinesHeader = styled.h1`
 
 interface AlertProperties {
     visible: boolean;
+    heading: string;
+    body: () => JSX.Element;
+    buttonText: string;
+    onButtonClick: () => void;
 }
-
 interface GameProperties {
     knowledgePoints: number;
+    gameStarted: boolean;
+    diffcultyLevel: string;
+}
+
+interface QuestionProperties {
+    question: string;
+    options: string[];
 }
 
 const App = (): JSX.Element => {
+    //hooks
     const [hasLost, setHasLost] = useState<boolean>(false);
     const [alertProperties, setAlertProperties] = useState<AlertProperties>({
         visible: true,
+        heading: "Welcome",
+        body: () => <Instructions />,
+        buttonText: "OK.",
+        onButtonClick: () => startGame(),
     });
     const [gameProperties, setGameProperties] = useState<GameProperties>({
         knowledgePoints: 0,
+        gameStarted: false,
+        diffcultyLevel: "easy",
     });
+    const [questionProperties, setQuestionProperties] =
+        useState<QuestionProperties>({
+            question: "",
+            options: ["", "", "", ""],
+        });
 
     const history = useHistory();
 
+    //audio object
     const AUDIOS = {
         intro: new Howl({
             src: ["/kbc_sounds.mp3"],
         }),
     };
 
-    useEffect(() => {
-        window.addEventListener("focusout", () => {});
-        window.focus();
+    //important functions
 
-        return () => window.removeEventListener("focusout", () => {});
+    const fetchQuestions = async () => {
+        if (gameProperties.diffcultyLevel === "easy") {
+            const res = await fetchEasyQuestions();
+        } else if (gameProperties.diffcultyLevel === "medium") {
+            const res = await fetchMediumQuestions();
+        } else if (gameProperties.diffcultyLevel === "hard") {
+            const res = await fetchDifficultQuestions();
+        }
+    };
+
+    const startGame = () => {
+        setAlertProperties({
+            ...alertProperties,
+            visible: false,
+        });
+        AUDIOS.intro.play();
+        setGameProperties({ ...gameProperties, gameStarted: true });
+    };
+
+    const focusOutCB = () => {
+        if (document.visibilityState === "hidden") {
+            setAlertProperties({
+                ...alertProperties,
+                visible: true,
+                heading: "Uh, oh! 😱",
+                body: () => (
+                    <p>
+                        Looks like you changed tabs, (most probably to search
+                        for the answer) which is not allowed in this game! Don't
+                        switch tabs!!! Didn't switch tabs? Report a bug!
+                    </p>
+                ),
+                buttonText: "Retry :(",
+                onButtonClick: () => {
+                    window.location.reload();
+                },
+            });
+            setHasLost(true);
+            setGameProperties({ ...gameProperties, gameStarted: false });
+        } else {
+            return;
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("visibilitychange", focusOutCB);
+
+        return () => window.removeEventListener("visibilitychange", focusOutCB);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <React.Fragment>
-            <SetHasLostContext.Provider value={setHasLost}>
-                <GlobalStyles bgColor={colors.primary} />
+            <GamePropertiesContext.Provider value={gameProperties}>
+                <SetHasLostContext.Provider value={setHasLost}>
+                    <SetGamePropertiesContext.Provider
+                        value={setGameProperties}
+                    >
+                        <SetAlertPropetiesContext.Provider
+                            value={setAlertProperties}
+                        >
+                            <GlobalStyles bgColor={colors.primary} />
 
-                <Switch>
-                    <Route path="/" exact>
-                        <Menu
-                            logo={MenuIcon}
-                            onClick={() => history.push("/settings")}
-                        />
+                            <Switch>
+                                <Route path="/" exact>
+                                    <Menu
+                                        logo={MenuIcon}
+                                        onClick={() =>
+                                            history.push("/settings")
+                                        }
+                                    />
 
-                        {alertProperties.visible ? (
-                            <Alert
-                                heading="Welcome!"
-                                body={() => <Instructions />}
-                                buttonText="OK."
-                                onButtonClick={() => {
-                                    setAlertProperties({
-                                        ...alertProperties,
-                                        visible: false,
-                                    });
-                                    AUDIOS.intro.play();
-                                }}
-                            />
-                        ) : null}
+                                    {alertProperties.visible ? (
+                                        <Alert
+                                            heading={alertProperties.heading}
+                                            body={alertProperties.body}
+                                            buttonText={
+                                                alertProperties.buttonText
+                                            }
+                                            onButtonClick={
+                                                alertProperties.onButtonClick
+                                            }
+                                        />
+                                    ) : null}
 
-                        <Layout>
-                            <Timer />
-                            <KnowledgeScore score={40} />
+                                    <Layout>
+                                        <Timer />
+                                        <KnowledgeScore score={40} />
 
-                            <section>
-                                <Question question="Which of these coding languages are statically typed?" />
-                                <OptionGrid>
-                                    <Button style={{ margin: "20px 20px" }}>
-                                        Python
-                                    </Button>
+                                        <section>
+                                            <Question question="Which of these coding languages are statically typed?" />
+                                            <OptionGrid>
+                                                <Button
+                                                    style={{
+                                                        margin: "20px 20px",
+                                                    }}
+                                                >
+                                                    Python
+                                                </Button>
 
-                                    <Button style={{ margin: "20px 20px" }}>
-                                        JavaScript
-                                    </Button>
+                                                <Button
+                                                    style={{
+                                                        margin: "20px 20px",
+                                                    }}
+                                                >
+                                                    JavaScript
+                                                </Button>
 
-                                    <Button style={{ margin: "20px 20px" }}>
-                                        TypeScript
-                                    </Button>
+                                                <Button
+                                                    style={{
+                                                        margin: "20px 20px",
+                                                    }}
+                                                >
+                                                    TypeScript
+                                                </Button>
 
-                                    <Button style={{ margin: "20px 20px" }}>
-                                        Lua
-                                    </Button>
-                                </OptionGrid>
-                            </section>
+                                                <Button
+                                                    style={{
+                                                        margin: "20px 20px",
+                                                    }}
+                                                >
+                                                    Lua
+                                                </Button>
+                                            </OptionGrid>
+                                        </section>
 
-                            <section>
-                                <LifelinesHeader>Lifelines</LifelinesHeader>
+                                        <section>
+                                            <LifelinesHeader>
+                                                Lifelines
+                                            </LifelinesHeader>
 
-                                <Flexbox>
-                                    <Tooltip text="15s to search Google!">
-                                        <Lifeline
-                                            onClick={() => {
-                                                console.log(
-                                                    "google life line taken"
-                                                );
-                                            }}
-                                        >
-                                            <GoogleIconImg
-                                                src={GoogleIcon}
-                                                alt="Google Icon"
-                                            />
-                                        </Lifeline>
-                                    </Tooltip>
+                                            <Flexbox>
+                                                <Tooltip text="15s to search Google!">
+                                                    <Lifeline
+                                                        onClick={() => {
+                                                            console.log(
+                                                                "google life line taken"
+                                                            );
+                                                        }}
+                                                    >
+                                                        <GoogleIconImg
+                                                            src={GoogleIcon}
+                                                            alt="Google Icon"
+                                                        />
+                                                    </Lifeline>
+                                                </Tooltip>
 
-                                    <Tooltip text="Flip the question!">
-                                        <Lifeline
-                                            onClick={() => {
-                                                console.log(
-                                                    "google life line taken"
-                                                );
-                                            }}
-                                        >
-                                            <FlipIconImg
-                                                src={FlipIcon}
-                                                alt="Flip Icon"
-                                            />
-                                        </Lifeline>
-                                    </Tooltip>
-                                </Flexbox>
-                            </section>
-                        </Layout>
-                    </Route>
+                                                <Tooltip text="Flip the question!">
+                                                    <Lifeline
+                                                        onClick={() => {
+                                                            console.log(
+                                                                "google life line taken"
+                                                            );
+                                                        }}
+                                                    >
+                                                        <FlipIconImg
+                                                            src={FlipIcon}
+                                                            alt="Flip Icon"
+                                                        />
+                                                    </Lifeline>
+                                                </Tooltip>
+                                            </Flexbox>
+                                        </section>
+                                    </Layout>
+                                </Route>
 
-                    <Route path="/settings">
-                        <Settings />
-                    </Route>
+                                <Route path="/settings">
+                                    <Settings />
+                                </Route>
 
-                    <Route path="*">
-                        <Four />
-                    </Route>
-                </Switch>
-            </SetHasLostContext.Provider>
+                                <Route path="*">
+                                    <Four />
+                                </Route>
+                            </Switch>
+                        </SetAlertPropetiesContext.Provider>
+                    </SetGamePropertiesContext.Provider>
+                </SetHasLostContext.Provider>
+            </GamePropertiesContext.Provider>
         </React.Fragment>
     );
 };
 
 export default App;
-export { SetHasLostContext };
+export {
+    SetHasLostContext,
+    GamePropertiesContext,
+    SetGamePropertiesContext,
+    SetAlertPropetiesContext,
+};
