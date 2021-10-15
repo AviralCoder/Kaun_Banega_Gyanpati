@@ -7,7 +7,6 @@ import {
     SetAlertPropetiesContext,
 } from "../App";
 import { colors } from "../lib/colors/colors";
-import { timerComponentProps } from "../types/types";
 
 const TimerText = styled.p`
     color: #fff;
