@@ -22,11 +22,8 @@ import Settings from "./pages/Settings";
 import Alert from "./components/Alert";
 import Instructions from "./components/Instructions";
 import { Howl } from "howler";
-import {
-    fetchDifficultQuestions,
-    fetchEasyQuestions,
-    fetchMediumQuestions,
-} from "./api/api";
+import { fetchEasyQuestions } from "./api/api";
+import { shuffle } from "./utils/utils";
 
 const GamePropertiesContext = createContext<GameProperties>({
     knowledgePoints: 0,
@@ -65,14 +62,14 @@ interface AlertProperties {
     onButtonClick: () => void;
 }
 interface GameProperties {
-    knowledgePoints: number;
+    knowledgePoints?: number;
     gameStarted: boolean;
     diffcultyLevel: string;
 }
-
 interface QuestionProperties {
     question: string;
     options: string[];
+    correct: string;
 }
 
 const App = (): JSX.Element => {
@@ -86,14 +83,14 @@ const App = (): JSX.Element => {
         onButtonClick: () => startGame(),
     });
     const [gameProperties, setGameProperties] = useState<GameProperties>({
-        knowledgePoints: 0,
         gameStarted: false,
         diffcultyLevel: "easy",
     });
     const [questionProperties, setQuestionProperties] =
         useState<QuestionProperties>({
             question: "",
-            options: ["", "", "", ""],
+            options: [],
+            correct: "",
         });
 
     const history = useHistory();
@@ -103,17 +100,36 @@ const App = (): JSX.Element => {
         intro: new Howl({
             src: ["/kbc_sounds.mp3"],
         }),
+        correct: new Howl({
+            src: ["/correct.mp3"],
+        }),
+        wrong: new Howl({
+            src: ["/wrong.mp3"],
+        }),
     };
+
+    useEffect(() => {
+        console.log(questionProperties);
+    }, [questionProperties]);
 
     //important functions
 
     const fetchQuestions = async () => {
         if (gameProperties.diffcultyLevel === "easy") {
             const res = await fetchEasyQuestions();
-        } else if (gameProperties.diffcultyLevel === "medium") {
-            const res = await fetchMediumQuestions();
-        } else if (gameProperties.diffcultyLevel === "hard") {
-            const res = await fetchDifficultQuestions();
+
+            let answers: string[] = [
+                ...res.results[0].incorrect_answers,
+                res.results[0].correct_answer,
+            ];
+            answers = shuffle(answers);
+
+            setQuestionProperties({
+                ...questionProperties,
+                options: answers,
+                correct: res.results[0].correct_answer,
+                question: res.results[0].question,
+            });
         }
     };
 
@@ -124,6 +140,59 @@ const App = (): JSX.Element => {
         });
         AUDIOS.intro.play();
         setGameProperties({ ...gameProperties, gameStarted: true });
+        fetchQuestions();
+    };
+
+    const checkAnswer = (elem: string) => {
+        if (elem === questionProperties.correct) {
+            setGameProperties({
+                ...gameProperties,
+                gameStarted: false,
+            });
+            AUDIOS.correct.play();
+            setAlertProperties({
+                ...alertProperties,
+                visible: true,
+                heading: "Correct!",
+                body: () => {
+                    return <p>You answered the question correct!</p>;
+                },
+                buttonText: "Next!",
+                onButtonClick: () => {
+                    fetchQuestions();
+                    setAlertProperties({ ...alertProperties, visible: false });
+                    setGameProperties({
+                        ...gameProperties,
+                        gameStarted: true,
+                    });
+                },
+            });
+        } else {
+            setGameProperties({
+                ...gameProperties,
+                gameStarted: false,
+            });
+            AUDIOS.wrong.play();
+            setAlertProperties({
+                ...alertProperties,
+                visible: true,
+                heading: "Wrong!!",
+                body: () => {
+                    return (
+                        <p>
+                            You answered the question wrong! The answer is{" "}
+                            {questionProperties.correct}
+                        </p>
+                    );
+                },
+                buttonText: "Restart :(",
+                onButtonClick: () => {
+                    setHasLost(true);
+
+                    window.location.reload();
+                },
+            });
+        }
     };
 
     const focusOutCB = () => {
@@ -195,42 +264,35 @@ const App = (): JSX.Element => {
 
                                     <Layout>
                                         <Timer />
-                                        <KnowledgeScore score={40} />
+                                        {/* over here replace 100 by the knowledge points */}
+                                        <KnowledgeScore
+                                            score={hasLost ? 0 : 100}
+                                        />
 
                                         <section>
-                                            <Question question="Which of these coding languages are statically typed?" />
+                                            <Question
+                                                question={
+                                                    questionProperties.question
+                                                }
+                                            />
                                             <OptionGrid>
-                                                <Button
-                                                    style={{
-                                                        margin: "20px 20px",
-                                                    }}
-                                                >
-                                                    Python
-                                                </Button>
-
-                                                <Button
-                                                    style={{
-                                                        margin: "20px 20px",
-                                                    }}
-                                                >
-                                                    JavaScript
-                                                </Button>
-
-                                                <Button
-                                                    style={{
-                                                        margin: "20px 20px",
-                                                    }}
-                                                >
-                                                    TypeScript
-                                                </Button>
-
-                                                <Button
-                                                    style={{
-                                                        margin: "20px 20px",
-                                                    }}
-                                                >
-                                                    Lua
-                                                </Button>
+                                                {questionProperties.options.map(
+                                                    (elem) => (
+                                                        <Button
+                                                            style={{
+                                                                margin: 20,
+                                                            }}
+                                                            key={elem}
+                                                            onClick={() =>
+                                                                checkAnswer(
+                                                                    elem
+                                                                )
+                                                            }
+                                                        >
+                                                            {elem}
+                                                        </Button>
+                                                    )
+                                                )}
                                             </OptionGrid>
                                         </section>
 
