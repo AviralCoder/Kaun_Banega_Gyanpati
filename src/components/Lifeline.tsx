@@ -4,6 +4,7 @@ import { lifelineComponentProps } from "../types/types";
 
 const StyledLifeline = styled.section`
     transition: 0.3s ease;
+
     &:hover {
         cursor: pointer;
         transform: scale(1.1);
