@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { colors } from "../lib/colors/colors";
 import { knowledgeScoreComponentProps } from "../types/types";
 import Button from "./Button";
 import domtoimage from "dom-to-image";
-import { SetAlertPropetiesContext, AlertPropertiesContext } from "../App";
 
 const KnowledgeScoreDiv = styled.div`
     border: 2px solid ${colors.secondary};
@@ -31,8 +30,6 @@ const Score = styled.h1`
 `;
 
 const KnowledgeScore = (props: knowledgeScoreComponentProps): JSX.Element => {
-    const setAlertProperties = useContext(SetAlertPropetiesContext);
-    const alertProperties = useContext(AlertPropertiesContext);
     const [buttonText, setButtonText] = useState("Download");
     const [headerText, setHeaderText] = useState(
         "You have gained this much knowledge -"
