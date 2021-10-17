@@ -203,6 +203,7 @@ const App = (): JSX.Element => {
 
     const focusOutCB = () => {
         if (document.visibilityState === "hidden") {
+            AUDIOS.wrong.play();
             setAlertProperties({
                 ...alertProperties,
                 visible: true,
@@ -221,6 +222,7 @@ const App = (): JSX.Element => {
             });
             setHasLost(true);
             setGameProperties({ ...gameProperties, gameStarted: false });
+            window.removeEventListener("visibilitychange", focusOutCB);
         } else {
             return;
         }
