@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import GlobalStyles from "./styles/global";
 import { colors } from "./lib/colors/colors";
 import Question from "./components/Question";
@@ -23,7 +23,8 @@ import Alert from "./components/Alert";
 import Instructions from "./components/Instructions";
 import { Howl } from "howler";
 import { fetchEasyQuestions } from "./api/api";
-import { shuffle } from "./utils/utils";
+import { shuffle, removeEncoding } from "./utils/utils";
+import fifty_fifty from "./images/5050.png";
 
 const GamePropertiesContext = createContext<GameProperties>({
     knowledgePoints: 0,
@@ -40,11 +41,7 @@ const SetAlertPropetiesContext = createContext<
     React.Dispatch<React.SetStateAction<AlertProperties>>
 >(() => {});
 
-const GoogleIconImg = styled.img`
-    width: 100px;
-`;
-
-const FlipIconImg = styled.img`
+const LifelineLogo = styled.img`
     width: 100px;
 `;
 
@@ -86,6 +83,7 @@ const App = (): JSX.Element => {
         gameStarted: false,
         diffcultyLevel: "easy",
     });
+    const knowledgePoints = useRef<number>(0);
     const [questionProperties, setQuestionProperties] =
         useState<QuestionProperties>({
             question: "",
@@ -150,6 +148,7 @@ const App = (): JSX.Element => {
                 gameStarted: false,
             });
             AUDIOS.correct.play();
+            knowledgePoints.current = knowledgePoints.current + 100;
             setAlertProperties({
                 ...alertProperties,
                 visible: true,
@@ -181,7 +180,7 @@ const App = (): JSX.Element => {
                     return (
                         <p>
                             You answered the question wrong! The answer is{" "}
-                            {questionProperties.correct}
+                            {removeEncoding(questionProperties.correct)}
                         </p>
                     );
                 },
@@ -266,7 +265,11 @@ const App = (): JSX.Element => {
                                         <Timer />
                                         {/* over here replace 100 by the knowledge points */}
                                         <KnowledgeScore
-                                            score={hasLost ? 0 : 100}
+                                            score={
+                                                hasLost
+                                                    ? 0
+                                                    : knowledgePoints.current
+                                            }
                                         />
 
                                         <section>
@@ -289,7 +292,9 @@ const App = (): JSX.Element => {
                                                                 )
                                                             }
                                                         >
-                                                            {elem}
+                                                            {removeEncoding(
+                                                                elem
+                                                            )}
                                                         </Button>
                                                     )
                                                 )}
@@ -310,7 +315,7 @@ const App = (): JSX.Element => {
                                                             );
                                                         }}
                                                     >
-                                                        <GoogleIconImg
+                                                        <LifelineLogo
                                                             src={GoogleIcon}
                                                             alt="Google Icon"
                                                         />
@@ -321,13 +326,28 @@ const App = (): JSX.Element => {
                                                     <Lifeline
                                                         onClick={() => {
                                                             console.log(
-                                                                "google life line taken"
+                                                                "flip life line taken"
                                                             );
                                                         }}
                                                     >
-                                                        <FlipIconImg
+                                                        <LifelineLogo
                                                             src={FlipIcon}
                                                             alt="Flip Icon"
+                                                        />
+                                                    </Lifeline>
+                                                </Tooltip>
+
+                                                <Tooltip text="Remove 2 of the wrong answers!">
+                                                    <Lifeline
+                                                        onClick={() => {
+                                                            console.log(
+                                                                "50:50 life line taken"
+                                                            );
+                                                        }}
+                                                    >
+                                                        <LifelineLogo
+                                                            src={fifty_fifty}
+                                                            alt="50:50 icon"
                                                         />
                                                     </Lifeline>
                                                 </Tooltip>
