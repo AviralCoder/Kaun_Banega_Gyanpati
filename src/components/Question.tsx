@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { colors } from "../lib/colors/colors";
 import { questionComponentProps } from "../types/types";
+import { removeEncoding } from "../utils/utils";
 
 const QuestionDiv = styled.div`
     border: 2px solid ${colors.secondary};
@@ -20,13 +21,9 @@ const QuestionText = styled.p`
 `;
 
 const Question = (props: questionComponentProps): JSX.Element => {
-    const editedText: string = props.question.replaceAll("&quot;", '"');
-    const editedText2: string = editedText.replaceAll("&rsquo;", "'");
-    const editedText3: string = editedText2.replaceAll("&#039;", "'");
-    const editedText4: string = editedText3.replaceAll("&eacute;", "é");
-    const editedText5: string = editedText4.replaceAll("&amp;", "&");
+    const editedText = removeEncoding(props.question);
 
-    const finalText = editedText5;
+    const finalText = editedText;
 
     return (
         <section className="question">
