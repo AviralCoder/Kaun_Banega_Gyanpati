@@ -10,7 +10,6 @@ import Four from "./pages/404";
 import { OptionGrid } from "./layout/OptionGrid";
 import Button from "./components/Button";
 import Lifeline from "./components/Lifeline";
-import GoogleIcon from "./images/google.png";
 import styled from "styled-components";
 import Flexbox from "./layout/Flexbox";
 import FlipIcon from "./images/flip.jpg";
@@ -40,6 +39,15 @@ const SetGamePropertiesContext = createContext<
 const SetAlertPropetiesContext = createContext<
     React.Dispatch<React.SetStateAction<AlertProperties>>
 >(() => {});
+const AlertPropertiesContext = createContext<AlertProperties>({
+    visible: false,
+    heading: "",
+    body: () => <p></p>,
+    buttonText: "",
+    onButtonClick: () => {
+        return;
+    },
+});
 
 const LifelineLogo = styled.img`
     width: 100px;
@@ -103,7 +111,11 @@ const App = (): JSX.Element => {
             options: [],
             correct: "",
         });
-
+    const [lifelineProperties, setLifelineProperties] = useState({
+        googleUsed: false,
+        halfUsed: false,
+        flipUsed: false,
+    });
     const history = useHistory();
 
     // code to remove spinner when app is loaded
@@ -138,7 +150,7 @@ const App = (): JSX.Element => {
         }
     };
 
-    const startGame = () => {
+    const startGame = (): void => {
         setAlertProperties({
             ...alertProperties,
             visible: false,
@@ -201,7 +213,7 @@ const App = (): JSX.Element => {
         }
     };
 
-    const focusOutCB = () => {
+    const focusOutCB = (): void => {
         if (document.visibilityState === "hidden") {
             AUDIOS.wrong.play();
             setAlertProperties({
@@ -228,6 +240,38 @@ const App = (): JSX.Element => {
         }
     };
 
+    const flipQuestion = (): void => {
+        setAlertProperties({
+            ...alertProperties,
+            visible: true,
+            heading: "Are you sure?",
+            body: () => (
+                <p>
+                    Do you really want to take the flip the question lifeline?
+                    Click Yes to flip or press esc on your keyboard to cancel.
+                    Be fast! The timer won't reset and is still running!
+                </p>
+            ),
+            buttonText: "Yes",
+            onButtonClick: () => {
+                fetchQuestions();
+                setLifelineProperties({
+                    ...lifelineProperties,
+                    flipUsed: true,
+                });
+                setAlertProperties({ ...alertProperties, visible: false });
+            },
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                setAlertProperties({ ...alertProperties, visible: false });
+            } else {
+                return;
+            }
+        });
+    };
+
     useEffect(() => {
         window.addEventListener("visibilitychange", focusOutCB);
 
@@ -246,133 +290,132 @@ const App = (): JSX.Element => {
                         <SetAlertPropetiesContext.Provider
                             value={setAlertProperties}
                         >
-                            <GlobalStyles bgColor={colors.primary} />
+                            <AlertPropertiesContext.Provider
+                                value={alertProperties}
+                            >
+                                <GlobalStyles bgColor={colors.primary} />
 
-                            <Switch>
-                                <Route path="/" exact>
-                                    <Menu
-                                        logo={MenuIcon}
-                                        onClick={() =>
-                                            history.push("/settings")
-                                        }
-                                    />
-
-                                    {alertProperties.visible ? (
-                                        <Alert
-                                            heading={alertProperties.heading}
-                                            body={alertProperties.body}
-                                            buttonText={
-                                                alertProperties.buttonText
-                                            }
-                                            onButtonClick={
-                                                alertProperties.onButtonClick
-                                            }
-                                        />
-                                    ) : null}
-
-                                    <Layout>
-                                        <Timer />
-                                        {/* over here replace 100 by the knowledge points */}
-                                        <KnowledgeScore
-                                            score={
-                                                hasLost
-                                                    ? 0
-                                                    : knowledgePoints.current
+                                <Switch>
+                                    <Route path="/" exact>
+                                        <Menu
+                                            logo={MenuIcon}
+                                            onClick={() =>
+                                                history.push("/settings")
                                             }
                                         />
 
-                                        <section>
-                                            <Question
-                                                question={
-                                                    questionProperties.question
+                                        {alertProperties.visible ? (
+                                            <Alert
+                                                heading={
+                                                    alertProperties.heading
+                                                }
+                                                body={alertProperties.body}
+                                                buttonText={
+                                                    alertProperties.buttonText
+                                                }
+                                                onButtonClick={
+                                                    alertProperties.onButtonClick
                                                 }
                                             />
-                                            <OptionGrid>
-                                                {questionProperties.options.map(
-                                                    (elem) => (
-                                                        <Button
-                                                            style={{
-                                                                margin: 20,
-                                                            }}
-                                                            key={elem}
-                                                            onClick={() =>
-                                                                checkAnswer(
+                                        ) : null}
+
+                                        <Layout>
+                                            <Timer />
+                                            {/* over here replace 100 by the knowledge points */}
+                                            <KnowledgeScore
+                                                score={
+                                                    hasLost
+                                                        ? 0
+                                                        : knowledgePoints.current
+                                                }
+                                            />
+
+                                            <section>
+                                                <Question
+                                                    question={
+                                                        questionProperties.question
+                                                    }
+                                                />
+                                                <OptionGrid>
+                                                    {questionProperties.options.map(
+                                                        (elem) => (
+                                                            <Button
+                                                                style={{
+                                                                    margin: 20,
+                                                                }}
+                                                                key={elem}
+                                                                onClick={() =>
+                                                                    checkAnswer(
+                                                                        elem
+                                                                    )
+                                                                }
+                                                            >
+                                                                {removeEncoding(
                                                                     elem
-                                                                )
+                                                                )}
+                                                            </Button>
+                                                        )
+                                                    )}
+                                                </OptionGrid>
+                                            </section>
+
+                                            <section>
+                                                <LifelinesHeader>
+                                                    Lifelines
+                                                </LifelinesHeader>
+
+                                                <Flexbox>
+                                                    {!lifelineProperties.flipUsed ? (
+                                                        <Tooltip
+                                                            text={
+                                                                "Change the question!"
                                                             }
                                                         >
-                                                            {removeEncoding(
-                                                                elem
-                                                            )}
-                                                        </Button>
-                                                    )
-                                                )}
-                                            </OptionGrid>
-                                        </section>
+                                                            <Lifeline
+                                                                onClick={
+                                                                    flipQuestion
+                                                                }
+                                                            >
+                                                                <LifelineLogo
+                                                                    src={
+                                                                        FlipIcon
+                                                                    }
+                                                                    alt="Flip Icon"
+                                                                />
+                                                            </Lifeline>
+                                                        </Tooltip>
+                                                    ) : null}
 
-                                        <section>
-                                            <LifelinesHeader>
-                                                Lifelines
-                                            </LifelinesHeader>
+                                                    <Tooltip text="Remove 2 of the wrong answers!">
+                                                        <Lifeline
+                                                            onClick={() => {
+                                                                console.log(
+                                                                    "50:50 life line taken"
+                                                                );
+                                                            }}
+                                                        >
+                                                            <LifelineLogo
+                                                                src={
+                                                                    fifty_fifty
+                                                                }
+                                                                alt="50:50 icon"
+                                                            />
+                                                        </Lifeline>
+                                                    </Tooltip>
+                                                </Flexbox>
+                                            </section>
+                                        </Layout>
+                                    </Route>
 
-                                            <Flexbox>
-                                                <Tooltip text="15s to search Google!">
-                                                    <Lifeline
-                                                        onClick={() => {
-                                                            console.log(
-                                                                "google life line taken"
-                                                            );
-                                                        }}
-                                                    >
-                                                        <LifelineLogo
-                                                            src={GoogleIcon}
-                                                            alt="Google Icon"
-                                                        />
-                                                    </Lifeline>
-                                                </Tooltip>
+                                    <Route path="/settings">
+                                        <Settings />
+                                    </Route>
 
-                                                <Tooltip text="Flip the question!">
-                                                    <Lifeline
-                                                        onClick={() => {
-                                                            console.log(
-                                                                "flip life line taken"
-                                                            );
-                                                        }}
-                                                    >
-                                                        <LifelineLogo
-                                                            src={FlipIcon}
-                                                            alt="Flip Icon"
-                                                        />
-                                                    </Lifeline>
-                                                </Tooltip>
-
-                                                <Tooltip text="Remove 2 of the wrong answers!">
-                                                    <Lifeline
-                                                        onClick={() => {
-                                                            console.log(
-                                                                "50:50 life line taken"
-                                                            );
-                                                        }}
-                                                    >
-                                                        <LifelineLogo
-                                                            src={fifty_fifty}
-                                                            alt="50:50 icon"
-                                                        />
-                                                    </Lifeline>
-                                                </Tooltip>
-                                            </Flexbox>
-                                        </section>
-                                    </Layout>
-                                </Route>
-
-                                <Route path="/settings">
-                                    <Settings />
-                                </Route>
-
-                                <Route path="*">
-                                    <Four />
-                                </Route>
-                            </Switch>
+                                    <Route path="*">
+                                        <Four />
+                                    </Route>
+                                </Switch>
+                            </AlertPropertiesContext.Provider>
                         </SetAlertPropetiesContext.Provider>
                     </SetGamePropertiesContext.Provider>
                 </SetHasLostContext.Provider>
@@ -387,5 +430,6 @@ export {
     GamePropertiesContext,
     SetGamePropertiesContext,
     SetAlertPropetiesContext,
+    AlertPropertiesContext,
     AUDIOS,
 };
