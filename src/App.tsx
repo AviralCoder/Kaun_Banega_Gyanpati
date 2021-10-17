@@ -106,6 +106,12 @@ const App = (): JSX.Element => {
         }),
     };
 
+    // code to remove spinner when app is loaded
+
+    useEffect(() => {
+        document.getElementById("center")?.remove();
+    }, []);
+
     useEffect(() => {
         console.log(questionProperties);
     }, [questionProperties]);
@@ -113,6 +119,7 @@ const App = (): JSX.Element => {
     //important functions
 
     const fetchQuestions = async () => {
+        setGameProperties({ ...gameProperties, gameStarted: true });
         if (gameProperties.diffcultyLevel === "easy") {
             const res = await fetchEasyQuestions();
 

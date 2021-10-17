@@ -34,12 +34,16 @@ const GridCellCenter = styled.div`
     justify-content: center;
 `;
 
-const Timer = (props: any): JSX.Element => {
+const Timer = (): JSX.Element => {
     const [timerValue, setTimerValue] = useState(60);
     const setHasLost = useContext(SetHasLostContext);
     const gameProperties = useContext(GamePropertiesContext);
     const setGameProperties = useContext(SetGamePropertiesContext);
     const setAlertPropertes = useContext(SetAlertPropetiesContext);
+
+    useEffect(() => {
+        setTimerValue(60);
+    }, [gameProperties.gameStarted]);
 
     useEffect(() => {
         let interval: any;

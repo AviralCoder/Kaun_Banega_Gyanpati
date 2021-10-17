@@ -8,9 +8,10 @@ const KnowledgeScoreDiv = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 20px;
+    border-radius: 50px;
     margin: 0 20px;
     flex-direction: column;
+    box-shadow: 0 0 20px 5px ${colors.secondary};
     transform: scale(0.9);
 `;
 
