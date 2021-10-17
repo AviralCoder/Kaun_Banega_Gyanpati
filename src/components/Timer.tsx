@@ -5,6 +5,7 @@ import {
     GamePropertiesContext,
     SetGamePropertiesContext,
     SetAlertPropetiesContext,
+    AlertPropertiesContext,
     AUDIOS,
 } from "../App";
 import { colors } from "../lib/colors/colors";
@@ -41,6 +42,7 @@ const Timer = (): JSX.Element => {
     const gameProperties = useContext(GamePropertiesContext);
     const setGameProperties = useContext(SetGamePropertiesContext);
     const setAlertPropertes = useContext(SetAlertPropetiesContext);
+    const alertProperties = useContext(AlertPropertiesContext);
 
     useEffect(() => {
         setTimerValue(60);
@@ -60,6 +62,7 @@ const Timer = (): JSX.Element => {
                     });
                     AUDIOS.wrong.play();
                     setAlertPropertes({
+                        ...alertProperties,
                         heading: "You lost! 😓",
                         visible: true,
                         body: () => (
