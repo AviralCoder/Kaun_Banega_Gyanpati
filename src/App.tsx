@@ -69,6 +69,19 @@ interface QuestionProperties {
     correct: string;
 }
 
+//audio object
+const AUDIOS = {
+    intro: new Howl({
+        src: ["/kbc_sounds.mp3"],
+    }),
+    correct: new Howl({
+        src: ["/correct.mp3"],
+    }),
+    wrong: new Howl({
+        src: ["/wrong.mp3"],
+    }),
+};
+
 const App = (): JSX.Element => {
     //hooks
     const [hasLost, setHasLost] = useState<boolean>(false);
@@ -92,19 +105,6 @@ const App = (): JSX.Element => {
         });
 
     const history = useHistory();
-
-    //audio object
-    const AUDIOS = {
-        intro: new Howl({
-            src: ["/kbc_sounds.mp3"],
-        }),
-        correct: new Howl({
-            src: ["/correct.mp3"],
-        }),
-        wrong: new Howl({
-            src: ["/wrong.mp3"],
-        }),
-    };
 
     // code to remove spinner when app is loaded
 
@@ -385,4 +385,5 @@ export {
     GamePropertiesContext,
     SetGamePropertiesContext,
     SetAlertPropetiesContext,
+    AUDIOS,
 };

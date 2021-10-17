@@ -5,6 +5,7 @@ import {
     GamePropertiesContext,
     SetGamePropertiesContext,
     SetAlertPropetiesContext,
+    AUDIOS,
 } from "../App";
 import { colors } from "../lib/colors/colors";
 
@@ -57,6 +58,7 @@ const Timer = (): JSX.Element => {
                         ...gameProperties,
                         gameStarted: false,
                     });
+                    AUDIOS.wrong.play();
                     setAlertPropertes({
                         heading: "You lost! 😓",
                         visible: true,
