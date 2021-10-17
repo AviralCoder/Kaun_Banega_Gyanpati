@@ -10,6 +10,10 @@ import {
 } from "../App";
 import { colors } from "../lib/colors/colors";
 
+interface CircleProps {
+    outlineColour: string;
+}
+
 const TimerText = styled.p`
     color: #fff;
     font-size: 6rem;
@@ -17,15 +21,16 @@ const TimerText = styled.p`
     font-weight: 300;
 `;
 
-const Circle = styled.div`
-    border: 10px solid ${colors.secondary};
+const Circle = styled.div<CircleProps>`
+    border: 10px solid ${(props) => props.outlineColour};
     width: 16rem;
     height: 16rem;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    box-shadow: 0 0 20px 20px ${colors.secondary};
+    box-shadow: 0 0 20px 20px ${(props) => props.outlineColour};
+    transition: 0.3s ease;
 `;
 
 const GridCellCenter = styled.div`
@@ -43,12 +48,20 @@ const Timer = (): JSX.Element => {
     const setGameProperties = useContext(SetGamePropertiesContext);
     const setAlertPropertes = useContext(SetAlertPropetiesContext);
     const alertProperties = useContext(AlertPropertiesContext);
+    const [colours, setColours] = useState(colors.secondary);
 
     useEffect(() => {
         setTimerValue(60);
     }, [gameProperties.gameStarted]);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
+        if (timerValue <= 10) {
+            setColours(colors.red);
+        } else {
+            setColours(colors.secondary);
+        }
+
         let interval: any;
 
         if (gameProperties.gameStarted === true) {
@@ -85,7 +98,7 @@ const Timer = (): JSX.Element => {
     return (
         <GridCellCenter>
             <div>
-                <Circle>
+                <Circle outlineColour={colours}>
                     <TimerText>{timerValue}</TimerText>
                 </Circle>
             </div>

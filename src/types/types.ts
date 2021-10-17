@@ -21,6 +21,7 @@ export type Response = {
 export type Colors = {
     primary: string;
     secondary: string;
+    red: string;
 };
 
 /// QUESTION COMPONENT PROPS
