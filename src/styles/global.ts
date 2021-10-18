@@ -27,7 +27,8 @@ export default createGlobalStyle<globalStylePropsTypes>`
     }
     
     ::-webkit-scrollbar-thumb {
-        background: ${colors.secondary}; 
+        background: ${colors.secondary};
+        border-radius: 20px;
     }
 
 `;

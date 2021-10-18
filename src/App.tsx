@@ -24,6 +24,7 @@ import { Howl } from "howler";
 import { fetchEasyQuestions } from "./api/api";
 import { shuffle, removeEncoding } from "./utils/utils";
 import fifty_fifty from "./images/5050.png";
+import ChatIcon from "./images/chat.jpg";
 
 const GamePropertiesContext = createContext<GameProperties>({
     knowledgePoints: 0,
@@ -75,6 +76,7 @@ interface QuestionProperties {
     question: string;
     options: string[];
     correct: string;
+    incorrret: string[];
 }
 
 //audio object
@@ -87,6 +89,9 @@ const AUDIOS = {
     }),
     wrong: new Howl({
         src: ["/wrong.mp3"],
+    }),
+    beep: new Howl({
+        src: ["/clock.mp3"],
     }),
 };
 
@@ -110,6 +115,7 @@ const App = (): JSX.Element => {
             question: "",
             options: [],
             correct: "",
+            incorrret: [],
         });
     const [lifelineProperties, setLifelineProperties] = useState({
         googleUsed: false,
@@ -302,6 +308,17 @@ const App = (): JSX.Element => {
                                             onClick={() =>
                                                 history.push("/settings")
                                             }
+                                            top="40px"
+                                            left="40px"
+                                        />
+
+                                        <Menu
+                                            logo={ChatIcon}
+                                            onClick={() =>
+                                                history.push("/report")
+                                            }
+                                            top="130px"
+                                            left="40px"
                                         />
 
                                         {alertProperties.visible ? (

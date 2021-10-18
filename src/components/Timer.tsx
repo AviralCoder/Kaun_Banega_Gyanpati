@@ -58,8 +58,10 @@ const Timer = (): JSX.Element => {
     useEffect(() => {
         if (timerValue <= 10) {
             setColours(colors.red);
+            AUDIOS.beep.play();
         } else {
             setColours(colors.secondary);
+            AUDIOS.beep.stop();
         }
 
         let interval: any;

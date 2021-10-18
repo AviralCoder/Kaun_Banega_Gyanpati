@@ -1,0 +1,4 @@
+-   [ ] Add settings page and report page
+-   [ ] Add hard and medum questions after a certain score
+-   [ ] Make the 50:50 lifeline working
+-   [ ] Add option for downloading score after user gives wrong answer.

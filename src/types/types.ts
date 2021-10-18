@@ -74,6 +74,8 @@ export type knowledgeScoreComponentProps = {
 export type menuComponentProps = {
     logo: string;
     onClick: () => void;
+    top: string;
+    left: string;
 };
 
 /// KNOWLEDGE SCORE CONTEXT PROPS
