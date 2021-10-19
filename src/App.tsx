@@ -205,7 +205,8 @@ const App = (): JSX.Element => {
                     return (
                         <p>
                             You answered the question wrong! The answer is{" "}
-                            {removeEncoding(questionProperties.correct)}
+                            {removeEncoding(questionProperties.correct)}. You
+                            scored {gameProperties.knowledgePoints}
                         </p>
                     );
                 },
