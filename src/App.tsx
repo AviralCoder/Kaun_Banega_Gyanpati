@@ -4,7 +4,7 @@ import { colors } from "./lib/colors/colors";
 import Question from "./components/Question";
 import { Layout } from "./layout/layout";
 import Timer from "./components/Timer";
-import { Switch, Route, useHistory } from "react-router-dom";
+import { Switch, Route, useHistory, useLocation } from "react-router-dom";
 import Four from "./pages/404";
 
 import { OptionGrid } from "./layout/OptionGrid";
@@ -124,6 +124,7 @@ const App = (): JSX.Element => {
         flipUsed: false,
     });
     const history = useHistory();
+    const location = useLocation();
 
     // code to remove spinner when app is loaded
 
@@ -222,27 +223,32 @@ const App = (): JSX.Element => {
     };
 
     const focusOutCB = (): void => {
-        if (document.visibilityState === "hidden") {
-            AUDIOS.wrong.play();
-            setAlertProperties({
-                ...alertProperties,
-                visible: true,
-                heading: "Uh, oh! 😱",
-                body: () => (
-                    <p>
-                        Looks like you changed tabs, (most probably to search
-                        for the answer) which is not allowed in this game! Don't
-                        switch tabs!!! Didn't switch tabs? Report a bug!
-                    </p>
-                ),
-                buttonText: "Retry :(",
-                onButtonClick: () => {
-                    window.location.reload();
-                },
-            });
-            setHasLost(true);
-            setGameProperties({ ...gameProperties, gameStarted: false });
-            window.removeEventListener("visibilitychange", focusOutCB);
+        if (location.pathname === "/") {
+            if (document.visibilityState === "hidden") {
+                AUDIOS.wrong.play();
+                setAlertProperties({
+                    ...alertProperties,
+                    visible: true,
+                    heading: "Uh, oh! 😱",
+                    body: () => (
+                        <p>
+                            Looks like you changed tabs, (most probably to
+                            search for the answer) which is not allowed in this
+                            game! Don't switch tabs!!! Didn't switch tabs?
+                            Report a bug!
+                        </p>
+                    ),
+                    buttonText: "Retry :(",
+                    onButtonClick: () => {
+                        window.location.reload();
+                    },
+                });
+                setHasLost(true);
+                setGameProperties({ ...gameProperties, gameStarted: false });
+                window.removeEventListener("visibilitychange", focusOutCB);
+            } else {
+                return;
+            }
         } else {
             return;
         }
