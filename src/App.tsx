@@ -25,6 +25,7 @@ import { fetchEasyQuestions } from "./api/api";
 import { shuffle, removeEncoding } from "./utils/utils";
 import fifty_fifty from "./images/5050.png";
 import ChatIcon from "./images/chat.jpg";
+import Report from "./pages/report";
 
 const GamePropertiesContext = createContext<GameProperties>({
     knowledgePoints: 0,
@@ -427,6 +428,10 @@ const App = (): JSX.Element => {
 
                                     <Route path="/settings">
                                         <Settings />
+                                    </Route>
+
+                                    <Route path="/report">
+                                        <Report />
                                     </Route>
 
                                     <Route path="*">
