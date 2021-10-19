@@ -68,11 +68,18 @@ const Report = (): JSX.Element => {
             <Description>Report a bug or suggest a feature!</Description>
 
             <Center>
-                <Input placeholder="Your email (so that I can get back to you)" />
+                <Input
+                    placeholder="Your email (so that I can get back to you)"
+                    type="email"
+                    name="email"
+                />
             </Center>
 
             <Center>
-                <Textarea placeholder="Report bug or suggest feature " />
+                <Textarea
+                    placeholder="Report bug or suggest feature "
+                    name="body"
+                />
             </Center>
 
             <Center>
