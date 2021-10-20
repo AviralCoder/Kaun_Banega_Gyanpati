@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { colors } from "../lib/colors/colors";
+import { useForm } from "@formspree/react";
 
 const Title = styled.h1`
     color: white;
@@ -60,31 +61,71 @@ const Button = styled.button`
     }
 `;
 
+interface Values {
+    email: string;
+    body: string;
+}
+
 const Report = (): JSX.Element => {
+    const [form, handleSubmit] = useForm("xayazozo");
+    const [values, setValues] = useState<Values>({
+        email: "",
+        body: "",
+    });
+
+    if (form.succeeded) {
+        return <Title>Thanks!</Title>;
+    }
+
     return (
         <React.Fragment>
             <Title>Report</Title>
 
             <Description>Report a bug or suggest a feature!</Description>
 
-            <Center>
-                <Input
-                    placeholder="Your email (so that I can get back to you)"
-                    type="email"
-                    name="email"
-                />
-            </Center>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    if (
+                        values.body.replaceAll(" ", "") === "" ||
+                        values.email.replaceAll(" ", "") === ""
+                    ) {
+                        window.alert("Please put in values.");
+                    } else {
+                        handleSubmit(e);
+                    }
+                }}
+            >
+                <Center>
+                    <Input
+                        placeholder="Your email (so that I can get back to you)"
+                        name="email"
+                        value={values.email}
+                        type="email"
+                        autoComplete="off"
+                        onChange={(e) =>
+                            setValues({ ...values, email: e.target.value })
+                        }
+                    />
+                </Center>
 
-            <Center>
-                <Textarea
-                    placeholder="Report bug or suggest feature "
-                    name="body"
-                />
-            </Center>
+                <Center>
+                    <Textarea
+                        placeholder="Report bug or suggest feature "
+                        name="body"
+                        value={values.body}
+                        onChange={(e) => {
+                            setValues({ ...values, body: e.target.value });
+                        }}
+                    />
+                </Center>
 
-            <Center>
-                <Button onClick={() => {}}>Submit</Button>
-            </Center>
+                <Center>
+                    <Button type="submit">
+                        {form.submitting ? "Loading..." : "Submit"}
+                    </Button>
+                </Center>
+            </form>
         </React.Fragment>
     );
 };
