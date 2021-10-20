@@ -4,7 +4,7 @@ import { colors } from "./lib/colors/colors";
 import Question from "./components/Question";
 import { Layout } from "./layout/layout";
 import Timer from "./components/Timer";
-import { Switch, Route, useHistory, useLocation } from "react-router-dom";
+import { Switch, Route, useLocation } from "react-router-dom";
 import Four from "./pages/404";
 
 import { OptionGrid } from "./layout/OptionGrid";
