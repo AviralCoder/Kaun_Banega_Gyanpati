@@ -123,7 +123,6 @@ const App = (): JSX.Element => {
         halfUsed: false,
         flipUsed: false,
     });
-    const history = useHistory();
     const location = useLocation();
 
     // code to remove spinner when app is loaded
