@@ -139,7 +139,7 @@ const App = (): JSX.Element => {
     //important functions
 
     const fetchQuestions = async () => {
-        setGameProperties({ ...gameProperties, gameStarted: true });
+        setQuestionProperties({ ...questionProperties, question: "Loading.." });
         if (gameProperties.diffcultyLevel === "easy") {
             const res = await fetchEasyQuestions();
 
@@ -155,6 +155,7 @@ const App = (): JSX.Element => {
                 correct: res.results[0].correct_answer,
                 question: res.results[0].question,
             });
+            setGameProperties({ ...gameProperties, gameStarted: true });
         }
     };
 
@@ -311,23 +312,23 @@ const App = (): JSX.Element => {
 
                                 <Switch>
                                     <Route path="/" exact>
-                                        <Menu
-                                            logo={MenuIcon}
-                                            onClick={() =>
-                                                history.push("/settings")
-                                            }
-                                            top="40px"
-                                            left="40px"
-                                        />
+                                        <a href="/settings">
+                                            <Menu
+                                                logo={MenuIcon}
+                                                onClick={() => {}}
+                                                top="40px"
+                                                left="40px"
+                                            />
+                                        </a>
 
-                                        <Menu
-                                            logo={ChatIcon}
-                                            onClick={() =>
-                                                history.push("/report")
-                                            }
-                                            top="130px"
-                                            left="40px"
-                                        />
+                                        <a href="/report">
+                                            <Menu
+                                                logo={ChatIcon}
+                                                top="130px"
+                                                left="40px"
+                                                onClick={() => {}}
+                                            />
+                                        </a>
 
                                         {alertProperties.visible ? (
                                             <Alert

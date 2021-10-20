@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { colors } from "../lib/colors/colors";
 import { useForm } from "@formspree/react";
+import ButtonBack from "../components/Button";
 
 const Title = styled.h1`
     color: white;
@@ -74,7 +75,17 @@ const Report = (): JSX.Element => {
     });
 
     if (form.succeeded) {
-        return <Title>Thanks!</Title>;
+        return (
+            <React.Fragment>
+                <Title>Thanks!</Title>
+
+                <Center>
+                    <a href="/">
+                        <ButtonBack>Back to home!</ButtonBack>
+                    </a>
+                </Center>
+            </React.Fragment>
+        );
     }
 
     return (
