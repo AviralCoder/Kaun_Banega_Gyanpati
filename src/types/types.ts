@@ -2,18 +2,13 @@
 
 import React from "react";
 
-export type Questions = {
+export type Response = {
     category: string;
     type: string;
     difficulty: string;
     question: string;
     correct_answer: string;
     incorrect_answers: string[];
-};
-
-export type Response = {
-    response_code: number;
-    results: Questions[];
 };
 
 // COLOR TYPES

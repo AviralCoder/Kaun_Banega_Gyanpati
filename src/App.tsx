@@ -6,7 +6,6 @@ import { Layout } from "./layout/layout";
 import Timer from "./components/Timer";
 import { Switch, Route, useLocation } from "react-router-dom";
 import Four from "./pages/404";
-
 import { OptionGrid } from "./layout/OptionGrid";
 import Button from "./components/Button";
 import Lifeline from "./components/Lifeline";
@@ -21,11 +20,17 @@ import Settings from "./pages/Settings";
 import Alert from "./components/Alert";
 import Instructions from "./components/Instructions";
 import { Howl } from "howler";
-import { fetchEasyQuestions } from "./api/api";
+import {
+    fetchDifficultQuestions,
+    fetchEasyQuestions,
+    fetchMediumQuestions,
+} from "./api/api";
 import { shuffle, removeEncoding } from "./utils/utils";
 import fifty_fifty from "./images/5050.png";
 import ChatIcon from "./images/chat.jpg";
 import Report from "./pages/report";
+import toast, { Toaster } from "react-hot-toast";
+import { HARD_CHANGE, MEDIUM_CHANGE, WON } from "./lib/lib";
 
 const GamePropertiesContext = createContext<GameProperties>({
     knowledgePoints: 0,
@@ -68,10 +73,13 @@ interface AlertProperties {
     buttonText: string;
     onButtonClick: () => void;
 }
+
+type DifficultyLevel = "easy" | "medium" | "hard";
+
 interface GameProperties {
     knowledgePoints?: number;
     gameStarted: boolean;
-    diffcultyLevel: string;
+    diffcultyLevel: DifficultyLevel;
 }
 interface QuestionProperties {
     question: string;
@@ -110,6 +118,7 @@ const App = (): JSX.Element => {
         gameStarted: false,
         diffcultyLevel: "easy",
     });
+    const difficultyLevel = useRef<DifficultyLevel>("easy");
     const knowledgePoints = useRef<number>(0);
     const [questionProperties, setQuestionProperties] =
         useState<QuestionProperties>({
@@ -132,27 +141,65 @@ const App = (): JSX.Element => {
     }, []);
 
     useEffect(() => {
-        console.log(questionProperties);
+        console.log(difficultyLevel.current);
     }, [questionProperties]);
 
     //important functions
 
     const fetchQuestions = async () => {
-        setQuestionProperties({ ...questionProperties, question: "Loading.." });
-        if (gameProperties.diffcultyLevel === "easy") {
+        setQuestionProperties({
+            ...questionProperties,
+            question: "Loading..",
+            options: [],
+        });
+        if (difficultyLevel.current === "easy") {
             const res = await fetchEasyQuestions();
 
             let answers: string[] = [
-                ...res.results[0].incorrect_answers,
-                res.results[0].correct_answer,
+                ...res.incorrect_answers,
+                res.correct_answer,
             ];
             answers = shuffle(answers);
 
             setQuestionProperties({
                 ...questionProperties,
                 options: answers,
-                correct: res.results[0].correct_answer,
-                question: res.results[0].question,
+                correct: res.correct_answer,
+                question: res.question,
+            });
+            setGameProperties({ ...gameProperties, gameStarted: true });
+        } else if (difficultyLevel.current === "medium") {
+            const res = await fetchMediumQuestions();
+
+            let answers: string[] = [
+                ...res.incorrect_answers,
+                res.correct_answer,
+            ];
+
+            answers = shuffle(answers);
+
+            setQuestionProperties({
+                ...questionProperties,
+                options: answers,
+                correct: res.correct_answer,
+                question: res.question,
+            });
+            setGameProperties({ ...gameProperties, gameStarted: true });
+        } else if (difficultyLevel.current === "hard") {
+            const res = await fetchDifficultQuestions();
+
+            let answers: string[] = [
+                ...res.incorrect_answers,
+                res.correct_answer,
+            ];
+
+            answers = shuffle(answers);
+
+            setQuestionProperties({
+                ...questionProperties,
+                options: answers,
+                correct: res.correct_answer,
+                question: res.question,
             });
             setGameProperties({ ...gameProperties, gameStarted: true });
         }
@@ -166,6 +213,36 @@ const App = (): JSX.Element => {
         AUDIOS.intro.play();
         setGameProperties({ ...gameProperties, gameStarted: true });
         fetchQuestions();
+    };
+
+    const checkDifficulty = (): void => {
+        if (knowledgePoints.current === MEDIUM_CHANGE) {
+            toast("Difficulty changed to Medium!", {
+                icon: "👏🏻",
+                style: { zIndex: 9999999999 },
+            });
+            difficultyLevel.current = "medium";
+        } else if (knowledgePoints.current === HARD_CHANGE) {
+            toast("Difficulty changed to Hard!", {
+                icon: "👏🏻",
+                style: { zIndex: 9999999999 },
+            });
+            difficultyLevel.current = "hard";
+        } else if (knowledgePoints.current === WON) {
+            setAlertProperties({
+                ...alertProperties,
+                visible: true,
+                heading: "You did it!",
+                body: () => (
+                    <p>
+                        You have won the game! You answered all the questions
+                        right! There aren't any more quetions. Well done!{" "}
+                    </p>
+                ),
+                buttonText: "Play again!",
+                onButtonClick: () => window.location.reload(),
+            });
+        }
     };
 
     const checkAnswer = (elem: string) => {
@@ -191,6 +268,7 @@ const App = (): JSX.Element => {
                         ...gameProperties,
                         gameStarted: true,
                     });
+                    checkDifficulty();
                 },
             });
         } else {
@@ -215,7 +293,6 @@ const App = (): JSX.Element => {
                 buttonText: "Restart :(",
                 onButtonClick: () => {
                     setHasLost(true);
-
                     window.location.reload();
                 },
             });
@@ -311,6 +388,8 @@ const App = (): JSX.Element => {
 
                                 <Switch>
                                     <Route path="/" exact>
+                                        <Toaster />
+
                                         <a href="/settings">
                                             <Menu
                                                 logo={MenuIcon}
