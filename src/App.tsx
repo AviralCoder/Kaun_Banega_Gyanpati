@@ -112,7 +112,22 @@ const App = (): JSX.Element => {
         heading: "Welcome",
         body: () => <Instructions />,
         buttonText: "OK.",
-        onButtonClick: () => startGame(),
+        onButtonClick: async () => {
+            setAlertProperties({
+                ...alertProperties,
+                body: () => (
+                    <p>
+                        Please wait while we activate the dyno (will take around
+                        5-10s). This will automatically close when dyno is
+                        activated.
+                    </p>
+                ),
+                onButtonClick: () => {},
+            });
+            await fetchEasyQuestions();
+            setAlertProperties({ ...alertProperties, visible: false });
+            startGame();
+        },
     });
     const [gameProperties, setGameProperties] = useState<GameProperties>({
         gameStarted: false,
@@ -167,7 +182,6 @@ const App = (): JSX.Element => {
                 correct: res.correct_answer,
                 question: res.question,
             });
-            setGameProperties({ ...gameProperties, gameStarted: true });
         } else if (difficultyLevel.current === "medium") {
             const res = await fetchMediumQuestions();
 
@@ -184,7 +198,6 @@ const App = (): JSX.Element => {
                 correct: res.correct_answer,
                 question: res.question,
             });
-            setGameProperties({ ...gameProperties, gameStarted: true });
         } else if (difficultyLevel.current === "hard") {
             const res = await fetchDifficultQuestions();
 
@@ -201,8 +214,9 @@ const App = (): JSX.Element => {
                 correct: res.correct_answer,
                 question: res.question,
             });
-            setGameProperties({ ...gameProperties, gameStarted: true });
         }
+
+        setGameProperties({ ...gameProperties, gameStarted: true });
     };
 
     const startGame = (): void => {
