@@ -15,8 +15,6 @@ import FlipIcon from "./images/flip.jpg";
 import Tooltip from "./components/Tooltip";
 import KnowledgeScore from "./components/KnowledgeScore";
 import Menu from "./components/Menu";
-import MenuIcon from "./images/menu.jpg";
-import Settings from "./pages/Settings";
 import Alert from "./components/Alert";
 import Instructions from "./components/Instructions";
 import { Howl } from "howler";
@@ -26,7 +24,6 @@ import {
     fetchMediumQuestions,
 } from "./api/api";
 import { shuffle, removeEncoding } from "./utils/utils";
-import fifty_fifty from "./images/5050.png";
 import ChatIcon from "./images/chat.jpg";
 import Report from "./pages/report";
 import toast, { Toaster } from "react-hot-toast";
@@ -89,6 +86,11 @@ interface QuestionProperties {
 }
 
 //audio object
+// audios of intor, correct, wrong and beep.
+// intro sound played when the game starts
+// correct sound played when correct answer is done
+// wrong sound played when user loses i.e. switches tab, gives wrong answer, timer goes out
+// howler.js used
 const AUDIOS = {
     intro: new Howl({
         src: ["/kbc_sounds.mp3"],
@@ -105,7 +107,7 @@ const AUDIOS = {
 };
 
 const App = (): JSX.Element => {
-    //hooks
+    //some state
     const [hasLost, setHasLost] = useState<boolean>(false);
     const [alertProperties, setAlertProperties] = useState<AlertProperties>({
         visible: true,
@@ -143,9 +145,8 @@ const App = (): JSX.Element => {
             incorrret: [],
         });
     const [lifelineProperties, setLifelineProperties] = useState({
-        googleUsed: false,
-        halfUsed: false,
         flipUsed: false,
+        flip2Used: false,
     });
     const location = useLocation();
 
@@ -161,19 +162,23 @@ const App = (): JSX.Element => {
 
     //important functions
 
+    // fetches a question, puts a loading text while the question is being fetched
     const fetchQuestions = async () => {
+        // set the questiont to laoding
         setQuestionProperties({
             ...questionProperties,
             question: "Loading..",
             options: [],
         });
         if (difficultyLevel.current === "easy") {
+            // fetch easy questions and set text to that question..
             const res = await fetchEasyQuestions();
 
             let answers: string[] = [
                 ...res.incorrect_answers,
                 res.correct_answer,
             ];
+            // shuffle the options
             answers = shuffle(answers);
 
             setQuestionProperties({
@@ -189,7 +194,7 @@ const App = (): JSX.Element => {
                 ...res.incorrect_answers,
                 res.correct_answer,
             ];
-
+            // shuffle options
             answers = shuffle(answers);
 
             setQuestionProperties({
@@ -205,7 +210,7 @@ const App = (): JSX.Element => {
                 ...res.incorrect_answers,
                 res.correct_answer,
             ];
-
+            // shuffle options
             answers = shuffle(answers);
 
             setQuestionProperties({
@@ -215,10 +220,11 @@ const App = (): JSX.Element => {
                 question: res.question,
             });
         }
-
+        // set game started to true so that the timer starts
         setGameProperties({ ...gameProperties, gameStarted: true });
     };
 
+    // all questions to run when the game start
     const startGame = (): void => {
         setAlertProperties({
             ...alertProperties,
@@ -259,7 +265,7 @@ const App = (): JSX.Element => {
         }
     };
 
-    const checkAnswer = (elem: string) => {
+    const checkAnswer = (elem: string): void => {
         if (elem === questionProperties.correct) {
             setGameProperties({
                 ...gameProperties,
@@ -345,7 +351,7 @@ const App = (): JSX.Element => {
         }
     };
 
-    const flipQuestion = (): void => {
+    const flipQuestion = (flip: string): void => {
         setAlertProperties({
             ...alertProperties,
             visible: true,
@@ -360,10 +366,17 @@ const App = (): JSX.Element => {
             buttonText: "Yes",
             onButtonClick: () => {
                 fetchQuestions();
-                setLifelineProperties({
-                    ...lifelineProperties,
-                    flipUsed: true,
-                });
+                if (flip === "1") {
+                    setLifelineProperties({
+                        ...lifelineProperties,
+                        flipUsed: true,
+                    });
+                } else {
+                    setLifelineProperties({
+                        ...lifelineProperties,
+                        flip2Used: true,
+                    });
+                }
                 setAlertProperties({ ...alertProperties, visible: false });
             },
         });
@@ -403,15 +416,6 @@ const App = (): JSX.Element => {
                                 <Switch>
                                     <Route path="/" exact>
                                         <Toaster />
-
-                                        <a href="/settings">
-                                            <Menu
-                                                logo={MenuIcon}
-                                                onClick={() => {}}
-                                                top="40px"
-                                                left="40px"
-                                            />
-                                        </a>
 
                                         <a href="/report">
                                             <Menu
@@ -478,9 +482,16 @@ const App = (): JSX.Element => {
                                             </section>
 
                                             <section>
-                                                <LifelinesHeader>
-                                                    Lifelines
-                                                </LifelinesHeader>
+                                                {lifelineProperties.flip2Used &&
+                                                lifelineProperties.flipUsed ? (
+                                                    <LifelinesHeader>
+                                                        All lifelines used!
+                                                    </LifelinesHeader>
+                                                ) : (
+                                                    <LifelinesHeader>
+                                                        Lifelines
+                                                    </LifelinesHeader>
+                                                )}
 
                                                 <Flexbox>
                                                     {!lifelineProperties.flipUsed ? (
@@ -490,8 +501,10 @@ const App = (): JSX.Element => {
                                                             }
                                                         >
                                                             <Lifeline
-                                                                onClick={
-                                                                    flipQuestion
+                                                                onClick={() =>
+                                                                    flipQuestion(
+                                                                        "1"
+                                                                    )
                                                                 }
                                                             >
                                                                 <LifelineLogo
@@ -504,29 +517,31 @@ const App = (): JSX.Element => {
                                                         </Tooltip>
                                                     ) : null}
 
-                                                    <Tooltip text="Remove 2 of the wrong answers!">
-                                                        <Lifeline
-                                                            onClick={() => {
-                                                                console.log(
-                                                                    "50:50 life line taken"
-                                                                );
-                                                            }}
+                                                    {!lifelineProperties.flip2Used ? (
+                                                        <Tooltip
+                                                            text={
+                                                                "Google the question.."
+                                                            }
                                                         >
-                                                            <LifelineLogo
-                                                                src={
-                                                                    fifty_fifty
+                                                            <Lifeline
+                                                                onClick={() =>
+                                                                    flipQuestion(
+                                                                        "2"
+                                                                    )
                                                                 }
-                                                                alt="50:50 icon"
-                                                            />
-                                                        </Lifeline>
-                                                    </Tooltip>
+                                                            >
+                                                                <LifelineLogo
+                                                                    src={
+                                                                        FlipIcon
+                                                                    }
+                                                                    alt="Flip Icon"
+                                                                />
+                                                            </Lifeline>
+                                                        </Tooltip>
+                                                    ) : null}
                                                 </Flexbox>
                                             </section>
                                         </Layout>
-                                    </Route>
-
-                                    <Route path="/settings">
-                                        <Settings />
                                     </Route>
 
                                     <Route path="/report">
