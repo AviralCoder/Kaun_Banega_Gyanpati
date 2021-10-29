@@ -417,7 +417,10 @@ const App = (): JSX.Element => {
                                     <Route path="/" exact>
                                         <Toaster />
 
-                                        <a href="/report">
+                                        <a
+                                            href="/report"
+                                            title="Go to report page"
+                                        >
                                             <Menu
                                                 logo={ChatIcon}
                                                 top="130px"
@@ -520,7 +523,7 @@ const App = (): JSX.Element => {
                                                     {!lifelineProperties.flip2Used ? (
                                                         <Tooltip
                                                             text={
-                                                                "Google the question.."
+                                                                "Change the question!"
                                                             }
                                                         >
                                                             <Lifeline
