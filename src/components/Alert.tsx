@@ -75,20 +75,26 @@ const Alert = (props: alertComponentProps): JSX.Element => {
     return (
         <React.Fragment>
             <AlertOuterOpacityDiv>
-                <AlertInnerModalDiv>
+                <AlertInnerModalDiv id="alert-inner">
                     <AlertTitle>{props.heading}</AlertTitle>
-
-                    {props.img ? <img src={props.img} alt={props.img} /> : null}
 
                     <AlertBody>{props.body()}</AlertBody>
 
-                    {props.buttonText ? (
-                        <Center>
+                    <Center>
+                        {props.buttonText && (
                             <BottomButton onClick={props.onButtonClick}>
                                 {props.buttonText}
                             </BottomButton>
-                        </Center>
-                    ) : null}
+                        )}
+                        {props.button2Text && (
+                            <BottomButton
+                                onClick={props.onButton2Click}
+                                style={{ marginTop: 140 }}
+                            >
+                                {props.button2Text}
+                            </BottomButton>
+                        )}
+                    </Center>
                 </AlertInnerModalDiv>
             </AlertOuterOpacityDiv>
         </React.Fragment>

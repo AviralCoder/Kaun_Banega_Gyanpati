@@ -28,6 +28,7 @@ import ChatIcon from "./images/chat.jpg";
 import Report from "./pages/report";
 import toast, { Toaster } from "react-hot-toast";
 import { HARD_CHANGE, MEDIUM_CHANGE, WON } from "./lib/lib";
+import domtoimage from "dom-to-image";
 
 const GamePropertiesContext = createContext<GameProperties>({
     knowledgePoints: 0,
@@ -69,6 +70,8 @@ interface AlertProperties {
     body: () => JSX.Element;
     buttonText: string;
     onButtonClick: () => void;
+    button2Text?: string;
+    onButton2Click?: () => void;
 }
 
 type DifficultyLevel = "easy" | "medium" | "hard";
@@ -265,6 +268,40 @@ const App = (): JSX.Element => {
         }
     };
 
+    const downloadScore = (): void => {
+        const node = document.getElementById("alert-inner");
+
+        setAlertProperties({
+            ...alertProperties,
+            visible: true,
+            heading: "Congrats!",
+            button2Text: "KBG!",
+            buttonText: ":)",
+            body: () => (
+                <p>The user has fairly won {knowledgePoints.current}</p>
+            ),
+        });
+
+        domtoimage.toJpeg(node!, { quality: 0.95 }).then((dataUrl) => {
+            const link = document.createElement("a");
+            link.download = "score.jpeg";
+            link.href = dataUrl;
+            link.click();
+            link.remove();
+
+            setAlertProperties({
+                ...alertProperties,
+                visible: true,
+                heading: "Downloaded!",
+                buttonText: "Play Again :(",
+                body: () => <p>Your score has been downloaded!</p>,
+                onButtonClick: () => {
+                    window.location.reload();
+                },
+            });
+        });
+    };
+
     const checkAnswer = (elem: string): void => {
         if (elem === questionProperties.correct) {
             setGameProperties({
@@ -315,6 +352,8 @@ const App = (): JSX.Element => {
                     setHasLost(true);
                     window.location.reload();
                 },
+                button2Text: "Download Score",
+                onButton2Click: () => downloadScore(),
             });
         }
     };
@@ -440,6 +479,12 @@ const App = (): JSX.Element => {
                                                 }
                                                 onButtonClick={
                                                     alertProperties.onButtonClick
+                                                }
+                                                button2Text={
+                                                    alertProperties.button2Text
+                                                }
+                                                onButton2Click={
+                                                    alertProperties.onButton2Click
                                                 }
                                             />
                                         ) : null}

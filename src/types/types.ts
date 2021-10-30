@@ -84,8 +84,9 @@ export type knowledgeScoreContextProps = {
 
 export type alertComponentProps = {
     heading: string;
-    img?: string;
     body: () => JSX.Element;
     buttonText?: string;
-    onButtonClick: () => void;
+    onButtonClick?: () => void;
+    button2Text?: string;
+    onButton2Click?: () => void;
 };
