@@ -29,6 +29,8 @@ import Report from "./pages/report";
 import toast, { Toaster } from "react-hot-toast";
 import { HARD_CHANGE, MEDIUM_CHANGE, WON } from "./lib/lib";
 import domtoimage from "dom-to-image";
+import useDimension from "./hooks/useDimension";
+import Mobile from "./error/Mobile";
 
 const GamePropertiesContext = createContext<GameProperties>({
     knowledgePoints: 0,
@@ -152,16 +154,13 @@ const App = (): JSX.Element => {
         flip2Used: false,
     });
     const location = useLocation();
+    const dimension = useDimension();
 
     // code to remove spinner when app is loaded
 
     useEffect(() => {
         document.getElementById("center")?.remove();
     }, []);
-
-    useEffect(() => {
-        console.log(difficultyLevel.current);
-    }, [questionProperties]);
 
     //important functions
 
@@ -437,6 +436,14 @@ const App = (): JSX.Element => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    console.log(location);
+
+    if (dimension.width! <= 768) {
+        if (location.pathname !== "/width=mobile") {
+            window.location.href = "/width=mobile";
+        }
+    }
+
     return (
         <React.Fragment>
             <GamePropertiesContext.Provider value={gameProperties}>
@@ -594,6 +601,10 @@ const App = (): JSX.Element => {
 
                                     <Route path="/report">
                                         <Report />
+                                    </Route>
+
+                                    <Route path="/width=mobile">
+                                        <Mobile title="Sorry, please view this game on a laptop/desktop for best experience" />
                                     </Route>
 
                                     <Route path="*">

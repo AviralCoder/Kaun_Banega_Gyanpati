@@ -90,3 +90,9 @@ export type alertComponentProps = {
     button2Text?: string;
     onButton2Click?: () => void;
 };
+
+// MOBILE VIEW COMPONENT PROPS
+
+export type mobileComponentProps = {
+    title: string;
+};
