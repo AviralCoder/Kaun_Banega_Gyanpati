@@ -64,7 +64,7 @@ const KnowledgeScore = (props: knowledgeScoreComponentProps): JSX.Element => {
 
                                 setButtonText("Download");
                                 setHeaderText(
-                                    `"You have gained this much knowledge -"`
+                                    `You have gained this much knowledge -`
                                 );
                             });
 
