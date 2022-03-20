@@ -1,5 +1,6 @@
 # Kaun Banega Gyanpati
 
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine/)
 
 My first typescript and styled component project 😄. All source code written in typescript, including styles. 
 
