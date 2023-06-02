@@ -1,6 +1,9 @@
 # DEPRECATED
+The project doesn't work anymore due to old underlying softwares being used and updating would be a task worse than hell.
+I am working on a new project using the same concept and API, but will take time.
+For now, this project has ended. 
 
-# [project ended]
+#  Kaun Banega Gyanpati
 
 My first typescript and styled component project 😄. All source code written in typescript, including styles. 
 
