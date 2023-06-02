@@ -118,24 +118,27 @@ const App = (): JSX.Element => {
     const [hasLost, setHasLost] = useState<boolean>(false);
     const [alertProperties, setAlertProperties] = useState<AlertProperties>({
         visible: true,
-        heading: "Welcome",
+        heading: "Sorry!",
         body: () => <Instructions />,
         buttonText: "OK.",
-        onButtonClick: async () => {
-            setAlertProperties({
-                ...alertProperties,
-                body: () => (
-                    <p>
-                        Please wait while we activate the dyno (will take around
-                        5-10s). This will automatically close when dyno is
-                        activated.
-                    </p>
-                ),
-                onButtonClick: () => {},
-            });
-            await fetchEasyQuestions();
-            setAlertProperties({ ...alertProperties, visible: false });
-            startGame();
+        onButtonClick: () => {
+            console.log("fail");
+        }
+//         onButtonClick: async () => {
+//             setAlertProperties({
+//                 ...alertProperties,
+//                 body: () => (
+//                     <p>
+//                         Please wait while we activate the dyno (will take around
+//                         5-10s). This will automatically close when dyno is
+//                         activated.
+//                     </p>
+//                 ),
+//                 onButtonClick: () => {},
+//             });
+//             await fetchEasyQuestions();
+//             setAlertProperties({ ...alertProperties, visible: false });
+//             startGame();
         },
     });
     const [gameProperties, setGameProperties] = useState<GameProperties>({
