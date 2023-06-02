@@ -17,6 +17,6 @@ export const fetchMediumQuestions = async (): Promise<Response> => {
 export const fetchDifficultQuestions = async (): Promise<Response> => {
     const endPoint: string =
         "https://trivia-api-kbg.herokuapp.com/questions/difficulty/hard/random";
-
+        
     return await (await fetch(endPoint)).json();
 };

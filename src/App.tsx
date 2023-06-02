@@ -37,6 +37,8 @@ const GamePropertiesContext = createContext<GameProperties>({
     gameStarted: false,
     diffcultyLevel: "easy",
 });
+
+//dont judge this section of the code!
 const SetHasLostContext = createContext<
     React.Dispatch<React.SetStateAction<boolean>>
 >(() => {});
