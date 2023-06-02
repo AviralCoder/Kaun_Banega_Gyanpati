@@ -1,7 +1,5 @@
 # Kaun Banega Gyanpati
 
-# [PROJECT ENDED]
-
 My first typescript and styled component project 😄. All source code written in typescript, including styles. 
 
 
