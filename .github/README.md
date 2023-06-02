@@ -1,4 +1,4 @@
-# Kaun Banega Gyanpati
+# DEPRECATED
 
 # [project ended]
 
